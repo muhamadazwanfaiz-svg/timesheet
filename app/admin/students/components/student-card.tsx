@@ -31,6 +31,18 @@ interface StudentCardProps {
 export function StudentCard({ student }: StudentCardProps) {
     const completedSessions = student.slots.filter(s => s.status === "COMPLETED").length;
 
+    // Deterministic emoji based on student ID to ensure it stays the same for the student
+    const getFunAvatar = (id: string) => {
+        const emojis = ["🦊", "🐼", "🦄", "🦁", "🐧", "🐸", "🐙", "🍄", "🚀", "🎨", "🎸", "⚡️", "🥑", "🍩", "🤖", "👻", "🐱", "🐶", "🦋", "🦖"];
+        // Simple hash of the ID string
+        let hash = 0;
+        for (let i = 0; i < id.length; i++) {
+            hash = id.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        const index = Math.abs(hash) % emojis.length;
+        return emojis[index];
+    };
+
     // Determine color for credits based on health
     const creditColor = student.credits > 3 ? "text-emerald-600" : student.credits > 0 ? "text-amber-600" : "text-red-600";
     const creditBg = student.credits > 3 ? "bg-emerald-50" : student.credits > 0 ? "bg-amber-50" : "bg-red-50";
@@ -44,8 +56,8 @@ export function StudentCard({ student }: StudentCardProps) {
 
                 {/* 1. Identity Header */}
                 <div className="flex items-start gap-4">
-                    <div className="w-14 h-14 rounded-full bg-white flex-shrink-0 flex items-center justify-center text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 border-2 border-indigo-100 shadow-sm">
-                        {student.name.charAt(0)}
+                    <div className="w-14 h-14 rounded-full bg-white flex-shrink-0 flex items-center justify-center text-3xl shadow-sm border-2 border-slate-100 hover:scale-110 transition-transform cursor-default select-none animate-in fade-in zoom-in duration-500">
+                        {getFunAvatar(student.id)}
                     </div>
                     <div className="min-w-0">
                         <Link href={`/admin/students/${student.id}`} className="block">
