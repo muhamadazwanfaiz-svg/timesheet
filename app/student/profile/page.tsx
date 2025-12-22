@@ -14,6 +14,7 @@ import {
     Trophy, Gamepad2, CalendarDays, ExternalLink,
     Zap, Target, GraduationCap
 } from "lucide-react";
+import { NoteViewer } from "../components/note-viewer";
 
 async function getStudentData() {
     const cookieStore = await cookies();
@@ -206,7 +207,7 @@ export default async function StudentDashboardPage() {
                             </CardHeader>
                             <CardContent>
                                 <div className="prose prose-sm prose-amber text-slate-700 whitespace-pre-wrap">
-                                    {lastCompletedSlot.classNotes}
+                                    <NoteViewer note={lastCompletedSlot.classNotes} />
                                 </div>
                             </CardContent>
                         </Card>
@@ -218,21 +219,28 @@ export default async function StudentDashboardPage() {
                         <div className="space-y-3">
                             {student.slots.length === 0 && <p className="text-slate-500 italic px-1">No history yet.</p>}
                             {student.slots.map(slot => (
-                                <div key={slot.id} className="bg-white p-4 rounded-lg border shadow-sm flex items-center justify-between">
-                                    <div className="flex items-center gap-4">
-                                        <div className={`w-2 h-12 rounded-full ${slot.status === 'COMPLETED' ? 'bg-indigo-500' : 'bg-slate-300'}`}></div>
-                                        <div>
-                                            <div className="font-medium text-slate-900">
-                                                {new Date(slot.startTime).toLocaleDateString()}
-                                            </div>
-                                            <div className="text-sm text-slate-500">
-                                                {new Date(slot.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                <div key={slot.id} className="bg-white p-4 rounded-lg border shadow-sm space-y-3">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-4">
+                                            <div className={`w-2 h-12 rounded-full ${slot.status === 'COMPLETED' ? 'bg-indigo-500' : 'bg-slate-300'}`}></div>
+                                            <div>
+                                                <div className="font-medium text-slate-900">
+                                                    {new Date(slot.startTime).toLocaleDateString()}
+                                                </div>
+                                                <div className="text-sm text-slate-500">
+                                                    {new Date(slot.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                </div>
                                             </div>
                                         </div>
+                                        <Badge variant={slot.status === 'COMPLETED' ? 'default' : 'outline'}>
+                                            {slot.status}
+                                        </Badge>
                                     </div>
-                                    <Badge variant={slot.status === 'COMPLETED' ? 'default' : 'outline'}>
-                                        {slot.status}
-                                    </Badge>
+                                    {slot.classNotes && (
+                                        <div className="pl-6 border-l-2 border-indigo-100 ml-3">
+                                            <NoteViewer note={slot.classNotes} />
+                                        </div>
+                                    )}
                                 </div>
                             ))}
                         </div>

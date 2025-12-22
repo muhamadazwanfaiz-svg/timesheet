@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { SessionNotesEditor } from "../components/session-notes-editor";
 
 export default async function StudentDossierPage({
     params,
@@ -159,7 +160,7 @@ export default async function StudentDossierPage({
                                                 </Badge>
                                             </TableCell>
                                             <TableCell className="text-slate-500">
-                                                {s.classNotes || "No notes"}
+                                                <SessionNotesEditor slotId={s.id} initialNotes={s.classNotes} />
                                             </TableCell>
                                         </TableRow>
                                     ))
