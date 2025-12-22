@@ -39,7 +39,7 @@ export function AvailabilityManager({ date, slots }: AvailabilityManagerProps) {
     function onDateSelect(newDate: Date | undefined) {
         if (newDate) {
             setOptimisticDate(newDate); // Instant UI update
-            router.push(`?date=${newDate.toISOString()}`);
+            router.push(`?date=${format(newDate, "yyyy-MM-dd")}`);
         }
     }
 
