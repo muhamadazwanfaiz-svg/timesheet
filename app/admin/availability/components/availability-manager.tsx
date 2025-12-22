@@ -27,9 +27,17 @@ export function AvailabilityManager({ date, slots }: AvailabilityManagerProps) {
     const [endTime, setEndTime] = React.useState("10:00");
     const [loading, setLoading] = React.useState(false);
 
+    const [optimisticDate, setOptimisticDate] = React.useState(date);
+
+    // Sync optimistic/local date with server date
+    React.useEffect(() => {
+        setOptimisticDate(date);
+    }, [date]);
+
     // Handle date change
     function onDateSelect(newDate: Date | undefined) {
         if (newDate) {
+            setOptimisticDate(newDate); // Instant UI update
             router.push(`?date=${newDate.toISOString()}`);
         }
     }
@@ -77,7 +85,7 @@ export function AvailabilityManager({ date, slots }: AvailabilityManagerProps) {
                     <CardContent className="p-0">
                         <Calendar
                             mode="single"
-                            selected={date}
+                            selected={optimisticDate}
                             onSelect={onDateSelect}
                             className="rounded-md border shadow-none w-full flex justify-center"
                         />
@@ -89,7 +97,7 @@ export function AvailabilityManager({ date, slots }: AvailabilityManagerProps) {
                 <Card>
                     <CardHeader>
                         <CardTitle suppressHydrationWarning>
-                            Manage Slots for {format(date, "MMMM d, yyyy")}
+                            Manage Slots for {format(optimisticDate, "MMMM d, yyyy")}
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
