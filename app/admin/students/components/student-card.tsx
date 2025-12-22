@@ -150,28 +150,27 @@ export function StudentCard({ student }: StudentCardProps) {
                         />
                     </div>
                 </div>
-            </div>
-        </CardContent>
+            </CardContent>
 
-            {/* 3. Action Footer - 3 Cols (Add, Backlog, Profile) */ }
-    <CardFooter className="bg-white dark:bg-slate-950 p-0 border-t border-slate-100 dark:border-slate-800 grid grid-cols-3 divide-x divide-slate-100 dark:divide-slate-800">
+            {/* 3. Action Footer - 3 Cols (Add, Backlog, Profile) */}
+            <CardFooter className="bg-white dark:bg-slate-950 p-0 border-t border-slate-100 dark:border-slate-800 grid grid-cols-3 divide-x divide-slate-100 dark:divide-slate-800">
 
-        <AddCreditDialog studentId={student.id} studentName={student.name} />
+                <AddCreditDialog studentId={student.id} studentName={student.name} />
 
-        <BackfillDialog studentId={student.id} studentName={student.name} />
+                <BackfillDialog studentId={student.id} studentName={student.name} />
 
-        <Button
-            variant="ghost"
-            size="sm"
-            className="text-slate-600 hover:text-indigo-600 hover:bg-slate-50 text-xs h-10 rounded-none font-medium"
-            asChild
-        >
-            <Link href={`/admin/students/${student.id}`}>
-                Profile
-                <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
-            </Link>
-        </Button>
-    </CardFooter>
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-slate-600 hover:text-indigo-600 hover:bg-slate-50 text-xs h-10 rounded-none font-medium"
+                    asChild
+                >
+                    <Link href={`/admin/students/${student.id}`}>
+                        Profile
+                        <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+                    </Link>
+                </Button>
+            </CardFooter>
         </Card >
     );
 }
