@@ -34,91 +34,102 @@ export default async function StudentDossierPage({
 
     return (
         <div className="space-y-8">
-            <div className="flex items-center gap-4">
-                <Link
-                    href="/admin/students"
-                    className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition"
-                >
-                    <ArrowLeft size={20} />
-                </Link>
-                <div>
-                    <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
-                        {student.name}
-                    </h1>
-                    <div className="flex items-center gap-2 text-slate-500 text-sm">
-                        <Mail size={14} />
-                        {student.email}
+            {/* Header Section */}
+            <div className="bg-gradient-to-r from-indigo-50/80 to-white dark:from-indigo-950/20 dark:to-slate-950 p-6 rounded-2xl border border-indigo-100/50 dark:border-indigo-900/50">
+                <div className="flex items-center gap-4">
+                    <Link
+                        href="/admin/students"
+                        className="p-2 bg-white dark:bg-slate-900 hover:bg-indigo-50 dark:hover:bg-indigo-900/50 text-slate-400 hover:text-indigo-600 rounded-lg transition-colors border border-slate-200 dark:border-slate-800 shadow-sm"
+                    >
+                        <ArrowLeft size={20} />
+                    </Link>
+                    <div>
+                        <h1 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">
+                            {student.name}
+                        </h1>
+                        <div className="flex items-center gap-2 text-slate-500 text-sm mt-1">
+                            <Mail size={14} className="text-indigo-400" />
+                            {student.email}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Quick Stats - Embedded in Header for better flow */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8 max-w-2xl">
+                    <div className="p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-4 group hover:border-indigo-200 transition-colors">
+                        <div className="p-3 rounded-lg bg-indigo-50 text-indigo-600 group-hover:bg-indigo-100 transition-colors">
+                            <CreditCard size={20} />
+                        </div>
+                        <div>
+                            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Balance</p>
+                            <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
+                                {student.credits} <span className="text-sm font-normal text-slate-400">credits</span>
+                            </h3>
+                        </div>
+                    </div>
+                    <div className="p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-4 group hover:border-purple-200 transition-colors">
+                        <div className="p-3 rounded-lg bg-purple-50 text-purple-600 group-hover:bg-purple-100 transition-colors">
+                            <Clock size={20} />
+                        </div>
+                        <div>
+                            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Sessions</p>
+                            <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
+                                {totalSpent}
+                            </h3>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            {/* Quick Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-4">
-                    <div className="p-4 rounded-xl bg-blue-50 text-blue-600">
-                        <CreditCard size={24} />
-                    </div>
-                    <div>
-                        <p className="text-sm font-medium text-slate-500">Current Balance</p>
-                        <h3 className="text-3xl font-bold text-slate-900 dark:text-white">
-                            {student.credits} <span className="text-sm font-normal text-slate-400">credits</span>
-                        </h3>
-                    </div>
+            <Tabs defaultValue="sessions" className="w-full">
+                <div className="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-slate-800 mb-6">
+                    <TabsList className="bg-slate-100/50 dark:bg-slate-800/50 p-1">
+                        <TabsTrigger value="sessions" className="data-[state=active]:bg-white data-[state=active]:text-indigo-600 data-[state=active]:shadow-sm">Session Log</TabsTrigger>
+                        <TabsTrigger value="history" className="data-[state=active]:bg-white data-[state=active]:text-indigo-600 data-[state=active]:shadow-sm">Credit History</TabsTrigger>
+                    </TabsList>
                 </div>
-                <div className="p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-4">
-                    <div className="p-4 rounded-xl bg-purple-50 text-purple-600">
-                        <Clock size={24} />
-                    </div>
-                    <div>
-                        <p className="text-sm font-medium text-slate-500">Total Sessions</p>
-                        <h3 className="text-3xl font-bold text-slate-900 dark:text-white">
-                            {totalSpent}
-                        </h3>
-                    </div>
-                </div>
-            </div>
 
-            <Tabs defaultValue="history" className="w-full">
-                <TabsList>
-                    <TabsTrigger value="history">Credit History</TabsTrigger>
-                    <TabsTrigger value="sessions">Session Log</TabsTrigger>
-                    {/* Future: <TabsTrigger value="notes">Private Notes</TabsTrigger> */}
-                </TabsList>
-
-                <TabsContent value="history" className="mt-6">
-                    <div className="rounded-md border bg-white dark:bg-slate-900">
+                <TabsContent value="sessions" className="mt-0 space-y-4">
+                    <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-sm">
                         <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Date</TableHead>
-                                    <TableHead>Type</TableHead>
-                                    <TableHead>Description</TableHead>
-                                    <TableHead className="text-right">Amount</TableHead>
+                            <TableHeader className="bg-slate-50 dark:bg-slate-900/50">
+                                <TableRow className="hover:bg-transparent">
+                                    <TableHead className="w-[200px] text-xs font-semibold text-slate-500 uppercase tracking-wider">Date</TableHead>
+                                    <TableHead className="w-[150px] text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</TableHead>
+                                    <TableHead className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Tutor Notes</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {student.transactions.length === 0 ? (
+                                {student.slots.length === 0 ? (
                                     <TableRow>
-                                        <TableCell colSpan={4} className="text-center h-24 text-slate-500">
-                                            No recent transactions.
+                                        <TableCell colSpan={3} className="text-center h-32 text-slate-500">
+                                            <div className="flex flex-col items-center justify-center gap-2">
+                                                <Clock className="text-slate-200" size={32} />
+                                                <p>No sessions recorded yet.</p>
+                                            </div>
                                         </TableCell>
                                     </TableRow>
                                 ) : (
-                                    student.transactions.map((t) => (
-                                        <TableRow key={t.id}>
-                                            <TableCell className="font-medium">
-                                                {format(t.createdAt, "MMM d, yyyy h:mm a")}
+                                    student.slots.map((s) => (
+                                        <TableRow key={s.id} className="group hover:bg-slate-50/50 transition-colors">
+                                            <TableCell className="font-medium text-slate-700 dark:text-slate-200">
+                                                <div className="flex flex-col">
+                                                    <span>{format(s.startTime, "MMM d, yyyy")}</span>
+                                                    <span className="text-xs text-slate-400 font-normal">{format(s.startTime, "h:mm a")}</span>
+                                                </div>
                                             </TableCell>
                                             <TableCell>
-                                                <Badge variant="outline" className="text-xs">
-                                                    {t.type}
+                                                <Badge variant="outline" className={
+                                                    s.status === "COMPLETED" ? "bg-emerald-50 text-emerald-700 border-emerald-200" :
+                                                        s.status === "SCHEDULED" ? "bg-blue-50 text-blue-700 border-blue-200" : "bg-slate-50 text-slate-600"
+                                                }>
+                                                    {s.status}
                                                 </Badge>
                                             </TableCell>
-                                            <TableCell className="text-slate-500">
-                                                {t.description || "-"}
-                                            </TableCell>
-                                            <TableCell className={`text-right font-bold ${t.amount > 0 ? "text-emerald-600" : "text-red-600"}`}>
-                                                {t.amount > 0 ? "+" : ""}{t.amount}
+                                            <TableCell className="text-slate-600 relative p-0 h-full">
+                                                <div className="absolute inset-0 p-2">
+                                                    <SessionNotesEditor slotId={s.id} initialNotes={s.classNotes} />
+                                                </div>
                                             </TableCell>
                                         </TableRow>
                                     ))
@@ -128,39 +139,40 @@ export default async function StudentDossierPage({
                     </div>
                 </TabsContent>
 
-                <TabsContent value="sessions" className="mt-6">
-                    <div className="rounded-md border bg-white dark:bg-slate-900">
+                <TabsContent value="history" className="mt-0">
+                    <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-sm">
                         <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Date</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead>Notes</TableHead>
+                            <TableHeader className="bg-slate-50 dark:bg-slate-900/50">
+                                <TableRow className="hover:bg-transparent">
+                                    <TableHead className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Date</TableHead>
+                                    <TableHead className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Type</TableHead>
+                                    <TableHead className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Description</TableHead>
+                                    <TableHead className="text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Amount</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {student.slots.length === 0 ? (
+                                {student.transactions.length === 0 ? (
                                     <TableRow>
-                                        <TableCell colSpan={3} className="text-center h-24 text-slate-500">
-                                            No sessions found.
+                                        <TableCell colSpan={4} className="text-center h-32 text-slate-500">
+                                            No recent transactions.
                                         </TableCell>
                                     </TableRow>
                                 ) : (
-                                    student.slots.map((s) => (
-                                        <TableRow key={s.id}>
-                                            <TableCell className="font-medium">
-                                                {format(s.startTime, "MMM d, yyyy h:mm a")}
+                                    student.transactions.map((t) => (
+                                        <TableRow key={t.id} className="hover:bg-slate-50/50">
+                                            <TableCell className="font-medium text-slate-600">
+                                                {format(t.createdAt, "MMM d, yyyy h:mm a")}
                                             </TableCell>
                                             <TableCell>
-                                                <Badge className={
-                                                    s.status === "COMPLETED" ? "bg-emerald-500" :
-                                                        s.status === "SCHEDULED" ? "bg-blue-500" : "bg-slate-500"
-                                                }>
-                                                    {s.status}
+                                                <Badge variant="secondary" className="text-xs bg-slate-100 text-slate-600 hover:bg-slate-200">
+                                                    {t.type}
                                                 </Badge>
                                             </TableCell>
-                                            <TableCell className="text-slate-500">
-                                                <SessionNotesEditor slotId={s.id} initialNotes={s.classNotes} />
+                                            <TableCell className="text-slate-500 text-sm">
+                                                {t.description || "-"}
+                                            </TableCell>
+                                            <TableCell className={`text-right font-bold font-mono ${t.amount > 0 ? "text-emerald-600" : "text-slate-900"}`}>
+                                                {t.amount > 0 ? "+" : ""}{t.amount}
                                             </TableCell>
                                         </TableRow>
                                     ))
