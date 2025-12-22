@@ -142,4 +142,55 @@ export async function backfillSessions(studentId: string, dates: Date[]) {
     revalidatePath("/admin/students");
 }
 
+export async function deleteSession(slotId: string) {
+    console.log(`Deleting session ${slotId}`);
+    try {
+        await prisma.$transaction(async (tx) => {
+            const slot = await tx.slot.findUnique({
+                where: { id: slotId }
+            });
+
+            if (!slot) throw new Error("Slot not found");
+
+            // If it was a completed session (meaning credits were deducted), refund the credit
+            if (slot.status === "COMPLETED") {
+                await tx.student.update({
+                    where: { id: slot.studentId! },
+                    data: { credits: { increment: 1 } }
+                });
+
+                await tx.creditTransaction.create({
+                    data: {
+                        studentId: slot.studentId!,
+                        amount: 1,
+                        type: "REFUND",
+                        description: `Refund: Session on ${slot.startTime.toDateString()} deleted`,
+                    }
+                });
+            }
+
+            // Delete the slot
+            await tx.slot.delete({ where: { id: slotId } });
+        });
+    } catch (e) {
+        console.error("Failed to delete session:", e);
+        throw e;
+    }
+    revalidatePath("/admin/students");
+}
+
+export async function scheduleSession(studentId: string, date: Date) {
+    await prisma.slot.create({
+        data: {
+            studentId,
+            startTime: date,
+            endTime: new Date(date.getTime() + 60 * 60 * 1000), // 1 hour default
+            status: "SCHEDULED",
+            classNotes: "",
+        }
+    });
+
+    revalidatePath("/admin/students");
+}
+
 

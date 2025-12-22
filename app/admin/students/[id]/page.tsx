@@ -14,6 +14,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { SessionNotesEditor } from "../components/session-notes-editor";
+import { DeleteSessionButton } from "../components/delete-session-button";
 
 export default async function StudentDossierPage({
     params,
@@ -130,6 +131,9 @@ export default async function StudentDossierPage({
                                                 <div className="absolute inset-0 p-2">
                                                     <SessionNotesEditor slotId={s.id} initialNotes={s.classNotes} />
                                                 </div>
+                                            </TableCell>
+                                            <TableCell className="text-right w-[50px]">
+                                                <DeleteSessionButton slotId={s.id} />
                                             </TableCell>
                                         </TableRow>
                                     ))

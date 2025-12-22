@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { AddCreditDialog } from "./add-credit-dialog";
 import { BackfillDialog } from "./backfill-dialog";
+import { ScheduleSessionDialog } from "./schedule-session-dialog";
 
 interface Slot {
     id: string;
@@ -126,8 +127,11 @@ export function StudentCard({ student }: StudentCardProps) {
                                 <span className="text-slate-300 text-lg">-</span>
                             )}
                         </div>
-                        <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mt-1">
-                            Upcoming
+                        <div className="flex items-center justify-center gap-1 mt-1">
+                            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                                Upcoming
+                            </div>
+                            <ScheduleSessionDialog studentId={student.id} />
                         </div>
                     </div>
                 </div>
