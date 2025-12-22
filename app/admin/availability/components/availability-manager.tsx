@@ -24,7 +24,7 @@ interface AvailabilityManagerProps {
 export function AvailabilityManager({ date, slots }: AvailabilityManagerProps) {
     const router = useRouter();
     const [startTime, setStartTime] = React.useState("09:00");
-    const [endTime, setEndTime] = React.useState("10:00");
+    const [duration, setDuration] = React.useState("60");
     const [isRecurring, setIsRecurring] = React.useState(false);
     const [loading, setLoading] = React.useState(false);
 
@@ -48,13 +48,13 @@ export function AvailabilityManager({ date, slots }: AvailabilityManagerProps) {
         try {
             // Construct Date objects from the time strings + current selected date
             const [startH, startM] = startTime.split(":").map(Number);
-            const [endH, endM] = endTime.split(":").map(Number);
+            const durationMins = parseInt(duration);
 
             const start = new Date(date);
             start.setHours(startH, startM, 0, 0);
 
-            const end = new Date(date);
-            end.setHours(endH, endM, 0, 0);
+            const end = new Date(start);
+            end.setMinutes(start.getMinutes() + durationMins);
 
             if (start >= end) {
                 toast.error("Invalid time info");
@@ -114,12 +114,19 @@ export function AvailabilityManager({ date, slots }: AvailabilityManagerProps) {
                                 />
                             </div>
                             <div className="grid gap-1.5 flex-1">
-                                <label className="text-sm font-medium">End Time</label>
-                                <Input
-                                    type="time"
-                                    value={endTime}
-                                    onChange={(e) => setEndTime(e.target.value)}
-                                />
+                                <label className="text-sm font-medium">Duration</label>
+                                <select
+                                    className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-800 dark:bg-slate-950 dark:ring-offset-slate-950 dark:placeholder:text-slate-400 dark:focus-visible:ring-indigo-800"
+                                    value={duration}
+                                    onChange={(e) => setDuration(e.target.value)}
+                                >
+                                    <option value="30">30 Minutes</option>
+                                    <option value="45">45 Minutes</option>
+                                    <option value="60">1 Hour</option>
+                                    <option value="90">1.5 Hours</option>
+                                    <option value="120">2 Hours</option>
+                                    <option value="180">3 Hours</option>
+                                </select>
                             </div>
                             <Button onClick={handleAddSlot} disabled={loading}>
                                 {loading ? "Adding..." : "Add Slot"}

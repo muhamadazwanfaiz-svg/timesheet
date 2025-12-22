@@ -35,6 +35,7 @@ export function ScheduleSessionDialog({ studentId, trigger }: { studentId: strin
     const [open, setOpen] = useState(false);
     const [date, setDate] = useState<Date>();
     const [time, setTime] = useState("10:00");
+    const [duration, setDuration] = useState("60");
     const [loading, setLoading] = useState(false);
 
     async function handleSchedule() {
@@ -46,7 +47,7 @@ export function ScheduleSessionDialog({ studentId, trigger }: { studentId: strin
             const scheduledDate = new Date(date);
             scheduledDate.setHours(hours, minutes, 0, 0);
 
-            await scheduleSession(studentId, scheduledDate);
+            await scheduleSession(studentId, scheduledDate, parseInt(duration));
             setOpen(false);
             toast.success("Session scheduled successfully");
         } catch (error) {
@@ -69,7 +70,7 @@ export function ScheduleSessionDialog({ studentId, trigger }: { studentId: strin
                 <DialogHeader>
                     <DialogTitle>Schedule New Session</DialogTitle>
                     <DialogDescription>
-                        Set a date and time for the upcoming class.
+                        Set a date, time, and duration for the upcoming class.
                     </DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
@@ -95,32 +96,54 @@ export function ScheduleSessionDialog({ studentId, trigger }: { studentId: strin
                                     onSelect={setDate}
                                     initialFocus
                                     disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
+                                    className="pointer-events-auto"
                                 />
                             </PopoverContent>
                         </Popover>
                     </div>
-                    <div className="grid gap-2">
-                        <Label>Time</Label>
-                        <Select value={time} onValueChange={setTime}>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Select time" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="09:00">9:00 AM</SelectItem>
-                                <SelectItem value="10:00">10:00 AM</SelectItem>
-                                <SelectItem value="11:00">11:00 AM</SelectItem>
-                                <SelectItem value="12:00">12:00 PM</SelectItem>
-                                <SelectItem value="13:00">1:00 PM</SelectItem>
-                                <SelectItem value="14:00">2:00 PM</SelectItem>
-                                <SelectItem value="15:00">3:00 PM</SelectItem>
-                                <SelectItem value="16:00">4:00 PM</SelectItem>
-                                <SelectItem value="17:00">5:00 PM</SelectItem>
-                                <SelectItem value="18:00">6:00 PM</SelectItem>
-                                <SelectItem value="19:00">7:00 PM</SelectItem>
-                                <SelectItem value="20:00">8:00 PM</SelectItem>
-                                <SelectItem value="21:00">9:00 PM</SelectItem>
-                            </SelectContent>
-                        </Select>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="grid gap-2">
+                            <Label>Time</Label>
+                            <Select value={time} onValueChange={setTime}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Time" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="09:00">9:00 AM</SelectItem>
+                                    <SelectItem value="09:30">9:30 AM</SelectItem>
+                                    <SelectItem value="10:00">10:00 AM</SelectItem>
+                                    <SelectItem value="10:30">10:30 AM</SelectItem>
+                                    <SelectItem value="11:00">11:00 AM</SelectItem>
+                                    <SelectItem value="11:30">11:30 AM</SelectItem>
+                                    <SelectItem value="12:00">12:00 PM</SelectItem>
+                                    <SelectItem value="13:00">1:00 PM</SelectItem>
+                                    <SelectItem value="14:00">2:00 PM</SelectItem>
+                                    <SelectItem value="15:00">3:00 PM</SelectItem>
+                                    <SelectItem value="16:00">4:00 PM</SelectItem>
+                                    <SelectItem value="17:00">5:00 PM</SelectItem>
+                                    <SelectItem value="18:00">6:00 PM</SelectItem>
+                                    <SelectItem value="19:00">7:00 PM</SelectItem>
+                                    <SelectItem value="20:00">8:00 PM</SelectItem>
+                                    <SelectItem value="21:00">9:00 PM</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="grid gap-2">
+                            <Label>Duration</Label>
+                            <Select value={duration} onValueChange={setDuration}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Duration" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="30">30 Mins</SelectItem>
+                                    <SelectItem value="45">45 Mins</SelectItem>
+                                    <SelectItem value="60">1 Hour</SelectItem>
+                                    <SelectItem value="90">1.5 Hours</SelectItem>
+                                    <SelectItem value="120">2 Hours</SelectItem>
+                                    <SelectItem value="180">3 Hours</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
                     </div>
                 </div>
                 <DialogFooter>

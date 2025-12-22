@@ -179,12 +179,12 @@ export async function deleteSession(slotId: string) {
     revalidatePath("/admin/students");
 }
 
-export async function scheduleSession(studentId: string, date: Date) {
+export async function scheduleSession(studentId: string, date: Date, durationMinutes: number = 60) {
     await prisma.slot.create({
         data: {
             studentId,
             startTime: date,
-            endTime: new Date(date.getTime() + 60 * 60 * 1000), // 1 hour default
+            endTime: new Date(date.getTime() + durationMinutes * 60 * 1000),
             status: "SCHEDULED",
             classNotes: "",
         }
