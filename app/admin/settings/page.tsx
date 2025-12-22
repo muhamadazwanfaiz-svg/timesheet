@@ -1,5 +1,5 @@
-import { getSystemSettings, toggleSystemSetting } from "@/app/actions/settings";
-import { Button } from "@/components/ui/button";
+import { getSystemSettings } from "@/app/actions/settings";
+import { FeatureToggle } from "./components/feature-toggle";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { revalidatePath } from "next/cache";
 
@@ -21,77 +21,26 @@ export default async function AdminSettingsPage() {
                     </CardHeader>
                     <CardContent className="space-y-6">
 
-                        {/* Toggle: Community */}
-                        <div className="flex items-center justify-between space-x-2">
-                            <div className="space-y-0.5">
-                                <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                                    Community Tab
-                                </label>
-                                <p className="text-sm text-slate-500">
-                                    Show the "Community" link in student sidebar.
-                                </p>
-                            </div>
-                            <form action={async () => {
-                                "use server";
-                                await toggleSystemSetting("showCommunity", !settings.showCommunity);
-                            }}>
-                                <Button
-                                    type="submit"
-                                    variant={settings.showCommunity ? "default" : "outline"}
-                                    size="sm"
-                                >
-                                    {settings.showCommunity ? "On" : "Off"}
-                                </Button>
-                            </form>
-                        </div>
+                        <FeatureToggle
+                            label="Community Tab"
+                            description="Show the 'Community' link in student sidebar."
+                            initialValue={settings.showCommunity}
+                            settingKey="showCommunity"
+                        />
 
-                        {/* Toggle: Courses */}
-                        <div className="flex items-center justify-between space-x-2">
-                            <div className="space-y-0.5">
-                                <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                                    Courses Tab
-                                </label>
-                                <p className="text-sm text-slate-500">
-                                    Show the "Courses" link in student sidebar.
-                                </p>
-                            </div>
-                            <form action={async () => {
-                                "use server";
-                                await toggleSystemSetting("showCourses", !settings.showCourses);
-                            }}>
-                                <Button
-                                    type="submit"
-                                    variant={settings.showCourses ? "default" : "outline"}
-                                    size="sm"
-                                >
-                                    {settings.showCourses ? "On" : "Off"}
-                                </Button>
-                            </form>
-                        </div>
+                        <FeatureToggle
+                            label="Courses Tab"
+                            description="Show the 'Courses' link in student sidebar."
+                            initialValue={settings.showCourses}
+                            settingKey="showCourses"
+                        />
 
-                        {/* Toggle: Sessions */}
-                        <div className="flex items-center justify-between space-x-2">
-                            <div className="space-y-0.5">
-                                <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                                    Sessions Tab
-                                </label>
-                                <p className="text-sm text-slate-500">
-                                    Show the "Sessions" link in student sidebar.
-                                </p>
-                            </div>
-                            <form action={async () => {
-                                "use server";
-                                await toggleSystemSetting("showSessions", !settings.showSessions);
-                            }}>
-                                <Button
-                                    type="submit"
-                                    variant={settings.showSessions ? "default" : "outline"}
-                                    size="sm"
-                                >
-                                    {settings.showSessions ? "On" : "Off"}
-                                </Button>
-                            </form>
-                        </div>
+                        <FeatureToggle
+                            label="Sessions Tab"
+                            description="Show the 'Sessions' link in student sidebar."
+                            initialValue={settings.showSessions}
+                            settingKey="showSessions"
+                        />
 
                     </CardContent>
                 </Card>
