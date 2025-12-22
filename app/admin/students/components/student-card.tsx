@@ -5,6 +5,7 @@ import { User, Mail, Calendar, ArrowRight, Zap, Target } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { AddCreditDialog } from "./add-credit-dialog";
 
 interface Slot {
     id: string;
@@ -35,12 +36,15 @@ export function StudentCard({ student }: StudentCardProps) {
     const creditBg = student.credits > 3 ? "bg-emerald-50" : student.credits > 0 ? "bg-amber-50" : "bg-red-50";
 
     return (
-        <Card className="overflow-hidden border-slate-200 dark:border-slate-800 hover:shadow-md transition-all duration-200 group flex flex-col h-full">
-            <CardContent className="p-5 flex flex-col gap-4 h-full">
+        <Card className="overflow-hidden border-slate-200 dark:border-slate-800 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group flex flex-col h-full bg-gradient-to-br from-white to-slate-50/50 dark:from-slate-950 dark:to-slate-900/50">
+            {/* Lively Top Accent */}
+            <div className="h-1.5 w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-80"></div>
 
-                {/* 1. Identity Header (Left Aligned for better use of 2-col width) */}
+            <CardContent className="p-5 flex flex-col gap-4 h-full relative">
+
+                {/* 1. Identity Header */}
                 <div className="flex items-start gap-4">
-                    <div className="w-14 h-14 rounded-full bg-indigo-50 flex-shrink-0 flex items-center justify-center text-xl font-bold text-indigo-600 border border-indigo-100">
+                    <div className="w-14 h-14 rounded-full bg-white flex-shrink-0 flex items-center justify-center text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 border-2 border-indigo-100 shadow-sm">
                         {student.name.charAt(0)}
                     </div>
                     <div className="min-w-0">
@@ -53,64 +57,71 @@ export function StudentCard({ student }: StudentCardProps) {
                             {student.email}
                         </div>
 
-                        {/* Modules/Badges inline with identity or just below */}
+                        {/* Modules/Badges */}
                         <div className="flex flex-wrap gap-2 mt-2">
                             {student.seoLevel && (
-                                <Badge variant="secondary" className="bg-indigo-50 text-indigo-700 h-5 px-1.5 text-[10px] font-semibold tracking-wide border-indigo-100">
+                                <Badge variant="secondary" className="bg-indigo-100/50 text-indigo-700 h-5 px-2 text-[10px] font-bold tracking-wide border border-indigo-100 shadow-sm">
                                     {student.seoLevel.toUpperCase()}
                                 </Badge>
                             )}
                             {student.module && (
-                                <Badge variant="outline" className="text-slate-500 h-5 px-1.5 text-[10px] border-slate-200 bg-slate-50/50">
-                                    {student.module.length > 25 ? student.module.substring(0, 25) + '...' : student.module}
+                                <Badge variant="outline" className="text-slate-600 h-5 px-2 text-[10px] border-slate-200 bg-white shadow-sm">
+                                    {student.module.length > 20 ? student.module.substring(0, 20) + '...' : student.module}
                                 </Badge>
                             )}
                         </div>
                     </div>
                 </div>
 
-                {/* Spacer to push Stats to bottom if needed, but here we just stack */}
                 <div className="flex-1"></div>
 
-                {/* 2. Stats Row (Compact) */}
-                <div className="flex items-center gap-6 pt-4 border-t border-slate-100 dark:border-slate-800">
+                {/* 2. Stats Row - Cleaner & Bolder */}
+                <div className="flex items-center gap-6 pt-4 border-t border-slate-100 dark:border-slate-800/50">
                     <div>
-                        <div className={`text-2xl font-bold ${creditColor} tabular-nums leading-none`}>
+                        <div className={`text-2xl font-black ${creditColor} tabular-nums leading-none tracking-tight drop-shadow-sm`}>
                             {student.credits}
                         </div>
-                        <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mt-1">
+                        <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mt-1">
                             Credits
                         </div>
                     </div>
-                    <div className="w-px h-8 bg-slate-100 dark:bg-slate-800"></div>
+                    <div className="w-px h-8 bg-slate-200 dark:bg-slate-700"></div>
                     <div>
-                        <div className="text-2xl font-bold text-slate-700 dark:text-slate-300 tabular-nums leading-none">
+                        <div className="text-2xl font-black text-slate-700 dark:text-slate-300 tabular-nums leading-none tracking-tight">
                             {completedSessions}
                         </div>
-                        <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mt-1">
+                        <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mt-1">
                             Sessions
                         </div>
                     </div>
                 </div>
             </CardContent>
 
-            {/* 3. Action Footer (Compact) */}
-            <CardFooter className="bg-slate-50/80 dark:bg-slate-900/50 p-2.5 flex items-center justify-between border-t border-slate-100 dark:border-slate-800">
+            {/* 3. Action Footer - 3 Cols as requested */}
+            <CardFooter className="bg-white dark:bg-slate-950 p-0 border-t border-slate-100 dark:border-slate-800 grid grid-cols-3 divide-x divide-slate-100 dark:divide-slate-800">
+
+                <AddCreditDialog studentId={student.id} studentName={student.name} />
+
                 <Button
                     variant="ghost"
                     size="sm"
-                    className="text-slate-500 hover:text-indigo-600 hover:bg-white text-xs h-8 px-2"
+                    className="text-slate-600 hover:text-indigo-600 hover:bg-slate-50 text-xs h-10 rounded-none font-medium"
                     asChild
                 >
                     <Link href={`/admin/students/${student.id}?tab=sessions`}>
                         <Calendar className="mr-1.5 h-3.5 w-3.5" />
-                        Log Session
+                        Log
                     </Link>
                 </Button>
 
-                <Button size="sm" className="bg-white hover:bg-indigo-50 text-indigo-600 border border-slate-200 shadow-sm text-xs h-8 px-3 ml-auto hover:border-indigo-200 transition-all font-medium" asChild>
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-slate-600 hover:text-indigo-600 hover:bg-slate-50 text-xs h-10 rounded-none font-medium"
+                    asChild
+                >
                     <Link href={`/admin/students/${student.id}`}>
-                        View Profile
+                        Profile
                         <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
                     </Link>
                 </Button>
