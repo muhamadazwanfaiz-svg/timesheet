@@ -33,6 +33,14 @@ export function LoginWizard() {
     const handleEmailSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
+
+        // Client-side quick check for Admin to avoid server latency/issues
+        if (email.toLowerCase().includes("venuslowshimin")) {
+            setStep("ADMIN_LOGIN");
+            setLoading(false);
+            return;
+        }
+
         try {
             const result = await checkEmailStatus(email);
             if (result.status === "ADMIN") {
