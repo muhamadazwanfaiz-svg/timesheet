@@ -12,7 +12,7 @@ export default async function AdminDashboard() {
     const now = new Date();
     const upcomingSessionsCount = await prisma.slot.count({
         where: {
-            startTime: { gte: now },
+            endTime: { gte: now },
             studentId: { not: null },
         },
     });
@@ -23,7 +23,7 @@ export default async function AdminDashboard() {
     // 2. Fetch Timeline (Next 5 booked sessions)
     const nextSessions = await prisma.slot.findMany({
         where: {
-            startTime: { gte: now },
+            endTime: { gte: now },
             studentId: { not: null },
         },
         orderBy: { startTime: "asc" },

@@ -13,6 +13,7 @@ import { format } from "date-fns";
 interface Slot {
     id: string;
     startTime: Date;
+    endTime: Date;
     status: string;
 }
 
@@ -34,10 +35,12 @@ interface StudentCardProps {
 export function StudentCard({ student }: StudentCardProps) {
     const completedSessions = student.slots.filter(s => s.status === "COMPLETED").length;
 
-    // Find next session
+    // Find next or current session (include sessions that haven't ended yet)
     const nextSession = student.slots
-        .filter(s => s.status === "SCHEDULED" && new Date(s.startTime) > new Date())
+        .filter(s => s.status === "SCHEDULED" && new Date(s.endTime) > new Date())
         .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())[0];
+
+    const isLive = nextSession && new Date(nextSession.startTime) <= new Date() && new Date(nextSession.endTime) > new Date();
 
     // Deterministic emoji based on student ID to ensure it stays the same for the student
     const getFunAvatar = (id: string) => {
@@ -118,14 +121,21 @@ export function StudentCard({ student }: StudentCardProps) {
 
                 {/* Dedicated Event Strip */}
                 <div className="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800">
-                    <div className="flex items-center justify-between p-3 rounded-lg bg-indigo-50/50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800/50">
+                    <div className={`flex items-center justify-between p-3 rounded-lg border transition-all ${isLive
+                        ? "bg-emerald-50 dark:bg-emerald-900/20 border-emerald-100 dark:border-emerald-800/50"
+                        : "bg-indigo-50/50 dark:bg-indigo-900/20 border-indigo-100 dark:border-indigo-800/50"
+                        }`}>
                         <div className="flex items-center gap-3">
-                            <div className="p-2 rounded-full bg-white dark:bg-slate-900 text-indigo-600 shadow-sm border border-indigo-50 dark:border-slate-800">
-                                <Clock size={16} />
+                            <div className={`p-2 rounded-full shadow-sm border ${isLive
+                                ? "bg-white dark:bg-slate-900 text-emerald-600 border-emerald-100 dark:border-emerald-800"
+                                : "bg-white dark:bg-slate-900 text-indigo-600 border-indigo-50 dark:border-slate-800"
+                                }`}>
+                                <Clock size={16} className={isLive ? "animate-pulse" : ""} />
                             </div>
                             <div>
-                                <div className="text-xs font-semibold text-indigo-900 dark:text-indigo-100 uppercase tracking-wide opacity-70 mb-0.5">
-                                    Next Session
+                                <div className={`text-xs font-semibold uppercase tracking-wide opacity-70 mb-0.5 ${isLive ? "text-emerald-700 dark:text-emerald-400" : "text-indigo-900 dark:text-indigo-100"
+                                    }`}>
+                                    {isLive ? "Happening Now" : "Next Session"}
                                 </div>
                                 <div className="text-sm font-bold text-slate-700 dark:text-slate-200">
                                     {nextSession ? (
