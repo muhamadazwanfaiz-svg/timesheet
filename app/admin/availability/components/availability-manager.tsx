@@ -54,8 +54,8 @@ export function AvailabilityManager({ date, slots }: AvailabilityManagerProps) {
 
             await createSlot(start, end);
             toast.success("Slot added");
-        } catch (e) {
-            toast.error("Failed to add slot");
+        } catch (e: any) {
+            toast.error(e.message || "Failed to add slot");
         } finally {
             setLoading(false);
         }
@@ -130,8 +130,8 @@ export function AvailabilityManager({ date, slots }: AvailabilityManagerProps) {
                                         <div
                                             key={slot.id}
                                             className={`flex items-center justify-between p-3 rounded-lg border ${slot.studentId
-                                                    ? "bg-indigo-50 border-indigo-200 dark:bg-indigo-900/20 dark:border-indigo-800"
-                                                    : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800"
+                                                ? "bg-indigo-50 border-indigo-200 dark:bg-indigo-900/20 dark:border-indigo-800"
+                                                : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800"
                                                 }`}
                                         >
                                             <div className="flex items-center gap-4">
