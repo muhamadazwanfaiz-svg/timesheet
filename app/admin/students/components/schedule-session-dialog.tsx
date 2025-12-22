@@ -100,42 +100,43 @@ export function ScheduleSessionDialog({ studentId, trigger }: { studentId: strin
                                 />
                             </PopoverContent>
                         </Popover>
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="grid gap-2">
-                                <Label>Time</Label>
-                                <div className="relative">
-                                    <input
-                                        type="time"
-                                        className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-800 dark:bg-slate-950 dark:ring-offset-slate-950 dark:placeholder:text-slate-400 dark:focus-visible:ring-indigo-800"
-                                        value={time}
-                                        onChange={(e) => setTime(e.target.value)}
-                                    />
-                                </div>
-                            </div>
-                            <div className="grid gap-2">
-                                <Label>Duration</Label>
-                                <Select value={duration} onValueChange={setDuration}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Duration" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="30">30 Mins</SelectItem>
-                                        <SelectItem value="45">45 Mins</SelectItem>
-                                        <SelectItem value="60">1 Hour</SelectItem>
-                                        <SelectItem value="90">1.5 Hours</SelectItem>
-                                        <SelectItem value="120">2 Hours</SelectItem>
-                                        <SelectItem value="180">3 Hours</SelectItem>
-                                    </SelectContent>
-                                </Select>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="grid gap-2">
+                            <Label>Time</Label>
+                            <div className="relative">
+                                <input
+                                    type="time"
+                                    className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-800 dark:bg-slate-950 dark:ring-offset-slate-950 dark:placeholder:text-slate-400 dark:focus-visible:ring-indigo-800"
+                                    value={time}
+                                    onChange={(e) => setTime(e.target.value)}
+                                />
                             </div>
                         </div>
+                        <div className="grid gap-2">
+                            <Label>Duration</Label>
+                            <Select value={duration} onValueChange={setDuration}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Duration" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="30">30 Mins</SelectItem>
+                                    <SelectItem value="45">45 Mins</SelectItem>
+                                    <SelectItem value="60">1 Hour</SelectItem>
+                                    <SelectItem value="90">1.5 Hours</SelectItem>
+                                    <SelectItem value="120">2 Hours</SelectItem>
+                                    <SelectItem value="180">3 Hours</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
                     </div>
-                    <DialogFooter>
-                        <Button onClick={handleSchedule} disabled={!date || loading} className="bg-indigo-600 hover:bg-indigo-700">
-                            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                            Schedule
-                        </Button>
-                    </DialogFooter>
+                </div>
+                <DialogFooter>
+                    <Button onClick={handleSchedule} disabled={!date || loading} className="bg-indigo-600 hover:bg-indigo-700">
+                        {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                        Schedule
+                    </Button>
+                </DialogFooter>
             </DialogContent>
         </Dialog>
     );
