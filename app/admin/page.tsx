@@ -117,21 +117,7 @@ export default async function AdminDashboard() {
                         </button>
                     </div>
 
-                    {/* Mini Module Tracker Mockup */}
-                    <div className="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-2xl shadow-lg p-6 text-white relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2"></div>
-                        <h3 className="font-bold text-lg mb-1">Top Performer</h3>
-                        <p className="text-indigo-100 text-sm mb-4">Sarah Johnson sent 3 homework assignments.</p>
-                        <div className="bg-white/10 rounded-lg p-3 backdrop-blur-sm">
-                            <div className="flex justify-between text-xs mb-1">
-                                <span>Progress</span>
-                                <span>85%</span>
-                            </div>
-                            <div className="h-1.5 bg-black/20 rounded-full overflow-hidden">
-                                <div className="h-full bg-white w-[85%]"></div>
-                            </div>
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </div>
