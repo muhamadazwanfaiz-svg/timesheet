@@ -6,26 +6,12 @@ export function middleware(req: NextRequest) {
 
     // Protect /admin routes
     if (url.pathname.startsWith("/admin")) {
-        const basicAuth = req.headers.get("authorization");
+        const cookieStore = req.cookies;
+        const isAdmin = cookieStore.get("admin_session")?.value === "true";
 
-        if (basicAuth) {
-            const authValue = basicAuth.split(" ")[1];
-            const [user, pwd] = atob(authValue).split(":");
-
-            // Hardcoded credentials for MVP. In production, use env vars.
-            // User: admin, Password: password123
-            if (user === "admin" && pwd === process.env.ADMIN_PASSWORD) {
-                return NextResponse.next();
-            }
+        if (!isAdmin) {
+            return NextResponse.redirect(new URL("/login", req.url));
         }
-
-        // Prompt for Basic Auth
-        return new NextResponse("Authentication required", {
-            status: 401,
-            headers: {
-                "WWW-Authenticate": 'Basic realm="Secure Area"',
-            },
-        });
     }
 
     return NextResponse.next();

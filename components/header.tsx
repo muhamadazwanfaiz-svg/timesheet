@@ -39,7 +39,7 @@ export async function Header() {
 
                     {/* Tutor Link (Explicit Button) */}
                     <Button asChild variant="outline" size="sm" className="gap-2 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-indigo-600 hover:border-indigo-200 dark:hover:border-indigo-800 transition-all">
-                        <Link href="/admin/students">
+                        <Link href="/login">
                             <Lock size={14} />
                             <span className="hidden sm:inline">Tutor Portal</span>
                             <span className="sm:hidden">Tutor</span>
