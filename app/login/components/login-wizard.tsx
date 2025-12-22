@@ -235,27 +235,6 @@ export function LoginWizard() {
                     </form>
                 )}
 
-                {step === "ONBOARDING_NAME" && (
-                    <form onSubmit={(e) => { e.preventDefault(); if (name) setStep("ONBOARDING_QUIZ"); }} className="space-y-4">
-                        <Input
-                            type="text"
-                            placeholder="e.g. Ali Baba"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            required
-                            className="h-12 text-lg"
-                            autoFocus
-                        />
-                        <Button type="submit" className="w-full h-12 bg-indigo-600 hover:bg-indigo-700">
-                            Next <ArrowRight className="ml-2 h-4 w-4" />
-                        </Button>
-                    </form>
-                )}
-
-
-
-
-
                 {step === "ONBOARDING_QUIZ" && (
                     <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
 
