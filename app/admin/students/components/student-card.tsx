@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { AddCreditDialog } from "./add-credit-dialog";
+import { BackfillDialog } from "./backfill-dialog";
 
 interface Slot {
     id: string;
@@ -109,10 +110,12 @@ export function StudentCard({ student }: StudentCardProps) {
                 </div>
             </CardContent>
 
-            {/* 3. Action Footer - 3 Cols as requested */}
-            <CardFooter className="bg-white dark:bg-slate-950 p-0 border-t border-slate-100 dark:border-slate-800 grid grid-cols-3 divide-x divide-slate-100 dark:divide-slate-800">
+            {/* 3. Action Footer - 4 Cols for Backlog */}
+            <CardFooter className="bg-white dark:bg-slate-950 p-0 border-t border-slate-100 dark:border-slate-800 grid grid-cols-4 divide-x divide-slate-100 dark:divide-slate-800">
 
                 <AddCreditDialog studentId={student.id} studentName={student.name} />
+
+                <BackfillDialog studentId={student.id} studentName={student.name} />
 
                 <Button
                     variant="ghost"

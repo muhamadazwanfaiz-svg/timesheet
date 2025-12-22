@@ -40,10 +40,16 @@ export function BackfillDialog({ studentId, studentName }: { studentId: string, 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-500 hover:text-indigo-600">
-                    <History className="h-4 w-4" />
-                    <span className="sr-only">Backfill History</span>
-                </Button>
+                <DialogTrigger asChild>
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-slate-500 hover:text-indigo-600 hover:bg-slate-50 text-xs h-10 rounded-none font-medium"
+                    >
+                        <History className="mr-1.5 h-3.5 w-3.5" />
+                        Backlog
+                    </Button>
+                </DialogTrigger>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
