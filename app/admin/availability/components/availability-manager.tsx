@@ -25,6 +25,7 @@ export function AvailabilityManager({ date, slots }: AvailabilityManagerProps) {
     const router = useRouter();
     const [startTime, setStartTime] = React.useState("09:00");
     const [endTime, setEndTime] = React.useState("10:00");
+    const [isRecurring, setIsRecurring] = React.useState(false);
     const [loading, setLoading] = React.useState(false);
 
     const [optimisticDate, setOptimisticDate] = React.useState(date);
@@ -60,8 +61,10 @@ export function AvailabilityManager({ date, slots }: AvailabilityManagerProps) {
                 return;
             }
 
-            await createSlot(start, end);
-            toast.success("Slot added");
+            // Default to 4 weeks if recurring is checked
+            const recurrenceWeeks = isRecurring ? 4 : 0;
+            await createSlot(start, end, recurrenceWeeks);
+            toast.success(isRecurring ? "Recurring slots added" : "Slot added");
         } catch (e: any) {
             toast.error(e.message || "Failed to add slot");
         } finally {
@@ -121,6 +124,24 @@ export function AvailabilityManager({ date, slots }: AvailabilityManagerProps) {
                             <Button onClick={handleAddSlot} disabled={loading}>
                                 {loading ? "Adding..." : "Add Slot"}
                             </Button>
+                        </div>
+
+                        <div className="flex items-center space-x-2 -mt-2 mb-6 ml-1">
+                            <div className="flex items-center space-x-2">
+                                <input
+                                    type="checkbox"
+                                    id="recurring"
+                                    checked={isRecurring}
+                                    onChange={(e) => setIsRecurring(e.target.checked)}
+                                    className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-600 cursor-pointer"
+                                />
+                                <label
+                                    htmlFor="recurring"
+                                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer text-slate-600"
+                                >
+                                    Repeat Weekly (next 4 weeks)
+                                </label>
+                            </div>
                         </div>
 
                         <div className="space-y-4">

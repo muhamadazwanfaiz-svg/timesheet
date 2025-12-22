@@ -1,6 +1,6 @@
 import { getSlots } from "@/app/actions/availability";
 import { AvailabilityManager } from "./components/availability-manager";
-import { RecurringDialog } from "./components/recurring-dialog";
+
 
 export default async function AvailabilityPage({
     searchParams,
@@ -23,7 +23,7 @@ export default async function AvailabilityPage({
                         Set your free time for students to book.
                     </p>
                 </div>
-                <RecurringDialog />
+                {/* Recurring dialog replaced by inline checkbox */}
             </div>
 
             <AvailabilityManager date={date} slots={slots} />

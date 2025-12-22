@@ -31,18 +31,32 @@ export async function getSlots(date: Date, endDate?: Date) {
     });
 }
 
-export async function createSlot(startTime: Date, endTime: Date) {
+export async function createSlot(startTime: Date, endTime: Date, recurrenceWeeks: number = 0) {
     await requireAdmin();
     // Validate basic logic
     if (startTime >= endTime) {
         throw new Error("End time must be after start time");
     }
 
-    await prisma.slot.create({
-        data: {
-            startTime,
-            endTime,
-        },
+    const slotsToCreate = [];
+
+    // Create current slot + future recurring slots
+    // loop i from 0 to recurrenceWeeks. 0 = today/base date.
+    for (let i = 0; i <= recurrenceWeeks; i++) {
+        const start = new Date(startTime);
+        start.setDate(start.getDate() + (i * 7)); // Add 7 days per week
+
+        const end = new Date(endTime);
+        end.setDate(end.getDate() + (i * 7));
+
+        slotsToCreate.push({
+            startTime: start,
+            endTime: end,
+        });
+    }
+
+    await prisma.slot.createMany({
+        data: slotsToCreate,
     });
 
     revalidatePath("/admin/availability");
