@@ -12,6 +12,13 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { createStudent } from "@/app/actions/students";
 import { toast } from "sonner";
@@ -85,6 +92,23 @@ export function AddStudentDialog() {
                                 placeholder="SEO Basics"
                                 className="col-span-3"
                             />
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="initialCredits" className="text-right">
+                                Package
+                            </Label>
+                            <Select name="initialCredits" defaultValue="0">
+                                <SelectTrigger className="col-span-3">
+                                    <SelectValue placeholder="Select starting credits" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="0">None (0 Credits)</SelectItem>
+                                    <SelectItem value="1">Trial (1 Credit)</SelectItem>
+                                    <SelectItem value="4">Basic (4 Credits)</SelectItem>
+                                    <SelectItem value="8">Pro (8 Credits)</SelectItem>
+                                    <SelectItem value="12">Premium (12 Credits)</SelectItem>
+                                </SelectContent>
+                            </Select>
                         </div>
                     </div>
                     <DialogFooter>

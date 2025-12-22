@@ -18,6 +18,7 @@ import { Student } from "@prisma/client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { BackfillDialog } from "./backfill-dialog";
 
 interface StudentTableProps {
     students: Student[];
@@ -73,14 +74,17 @@ export function StudentTable({ students }: StudentTableProps) {
                                 </TableCell>
                                 <TableCell>{student.module || "N/A"}</TableCell>
                                 <TableCell className="text-right">
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/10"
-                                        onClick={() => handleDelete(student.id)}
-                                    >
-                                        <Trash2 className="h-4 w-4" />
-                                    </Button>
+                                    <div className="flex justify-end items-center gap-1">
+                                        <BackfillDialog studentId={student.id} studentName={student.name} />
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/10"
+                                            onClick={() => handleDelete(student.id)}
+                                        >
+                                            <Trash2 className="h-4 w-4" />
+                                        </Button>
+                                    </div>
                                 </TableCell>
                             </TableRow>
                         ))

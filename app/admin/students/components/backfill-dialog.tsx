@@ -1,0 +1,81 @@
+"use client";
+
+import { Button } from "@/components/ui/button";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
+import { Calendar } from "@/components/ui/calendar";
+import { useState } from "react";
+import { toast } from "sonner";
+import { History, Loader2 } from "lucide-react";
+import { backfillSessions } from "@/app/actions/students";
+
+export function BackfillDialog({ studentId, studentName }: { studentId: string, studentName: string }) {
+    const [open, setOpen] = useState(false);
+    const [dates, setDates] = useState<Date[] | undefined>([]);
+    const [loading, setLoading] = useState(false);
+
+    async function handleBackfill() {
+        if (!dates || dates.length === 0) return;
+
+        setLoading(true);
+        try {
+            await backfillSessions(studentId, dates);
+            toast.success(`Successfully logged ${dates.length} past sessions.`);
+            setOpen(false);
+            setDates([]);
+        } catch (error) {
+            toast.error("Failed to backfill sessions.");
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    return (
+        <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-500 hover:text-indigo-600">
+                    <History className="h-4 w-4" />
+                    <span className="sr-only">Backfill History</span>
+                </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                    <DialogTitle>Log Past Classes</DialogTitle>
+                    <DialogDescription>
+                        Select dates for classes {studentName} already attended.
+                        Credits will be deducted automatically.
+                    </DialogDescription>
+                </DialogHeader>
+
+                <div className="flex justify-center py-4">
+                    <Calendar
+                        mode="multiple"
+                        selected={dates}
+                        onSelect={setDates}
+                        className="rounded-md border shadow-sm"
+                        disabled={(date) => date > new Date()} // Can't backfill future
+                    />
+                </div>
+
+                <DialogFooter>
+                    <div className="flex w-full items-center justify-between">
+                        <span className="text-sm text-slate-500">
+                            {dates?.length || 0} sessions selected
+                        </span>
+                        <Button onClick={handleBackfill} disabled={!dates?.length || loading} className="bg-indigo-600 hover:bg-indigo-700">
+                            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                            Confirm & Deduct
+                        </Button>
+                    </div>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+    );
+}
