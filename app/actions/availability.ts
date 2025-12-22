@@ -3,6 +3,14 @@
 import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 
+import { cookies } from "next/headers";
+
+async function requireAdmin() {
+    const cookieStore = await cookies();
+    const isAdmin = cookieStore.get("admin_session")?.value === "true";
+    if (!isAdmin) throw new Error("Unauthorized");
+}
+
 export async function getSlots(date: Date, endDate?: Date) {
     // Get slots for a specific date or range
     const start = new Date(date);
@@ -24,6 +32,7 @@ export async function getSlots(date: Date, endDate?: Date) {
 }
 
 export async function createSlot(startTime: Date, endTime: Date) {
+    await requireAdmin();
     // Validate basic logic
     if (startTime >= endTime) {
         throw new Error("End time must be after start time");
@@ -41,6 +50,7 @@ export async function createSlot(startTime: Date, endTime: Date) {
 }
 
 export async function deleteSlot(id: string) {
+    await requireAdmin();
     await prisma.slot.delete({
         where: { id },
     });
@@ -56,6 +66,7 @@ export async function generateRecurringSlots(
     startDateStr: string,
     endDateStr: string
 ) {
+    await requireAdmin();
     const startDate = new Date(startDateStr);
     const endDate = new Date(endDateStr);
     const [hour, minute] = time.split(":").map(Number);
