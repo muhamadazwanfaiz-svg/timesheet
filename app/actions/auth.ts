@@ -96,6 +96,10 @@ export async function loginStudent(formData: FormData) {
 
     // --- ADMIN OVERRIDE ---
     if (email.toLowerCase().includes("venuslowshimin")) {
+        if (password !== "admin123") {
+            throw new Error("Invalid credentials");
+        }
+
         const cookieStore = await cookies();
         cookieStore.set("admin_session", "true", {
             httpOnly: true,

@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 type Step =
     | "EMAIL_ENTRY"
     | "LOGIN_PASSWORD"
+    | "ADMIN_LOGIN"
     | "ACTIVATE_PASSWORD"
     | "ONBOARDING_NAME"
     | "ONBOARDING_QUIZ"
@@ -34,7 +35,9 @@ export function LoginWizard() {
         setLoading(true);
         try {
             const result = await checkEmailStatus(email);
-            if (result.status === "EXISTING") {
+            if (result.status === "ADMIN") {
+                setStep("ADMIN_LOGIN");
+            } else if (result.status === "EXISTING") {
                 setName(result.name || "");
                 setStep("LOGIN_PASSWORD");
             } else if (result.status === "NEEDS_ACTIVATION") {
@@ -118,6 +121,12 @@ export function LoginWizard() {
                         <CardDescription>Enter your password to continue</CardDescription>
                     </>
                 )}
+                {step === "ADMIN_LOGIN" && (
+                    <>
+                        <CardTitle className="text-xl">Admin Access</CardTitle>
+                        <CardDescription>Verify your identity to proceed</CardDescription>
+                    </>
+                )}
                 {step === "ACTIVATE_PASSWORD" && (
                     <>
                         <CardTitle className="text-xl">Activate Account</CardTitle>
@@ -187,6 +196,29 @@ export function LoginWizard() {
                         </Button>
                         <button type="button" onClick={() => setStep("EMAIL_ENTRY")} className="w-full text-sm text-slate-500 hover:text-indigo-600 mt-2">
                             Not you? Change email
+                        </button>
+                    </form>
+                )}
+
+                {step === "ADMIN_LOGIN" && (
+                    <form onSubmit={handleLogin} className="space-y-4">
+                        <div className="text-sm bg-slate-50 p-3 rounded text-slate-600 border border-slate-200">
+                            Administrator: <span className="font-semibold">{email}</span>
+                        </div>
+                        <Input
+                            type="password"
+                            placeholder="Admin Password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                            className="h-12"
+                            autoFocus
+                        />
+                        <Button disabled={loading} type="submit" className="w-full h-12 bg-indigo-600 hover:bg-indigo-700">
+                            {loading ? <Loader2 className="animate-spin" /> : "Verify & Enter"}
+                        </Button>
+                        <button type="button" onClick={() => setStep("EMAIL_ENTRY")} className="w-full text-sm text-slate-500 hover:text-indigo-600 mt-2">
+                            Change email
                         </button>
                     </form>
                 )}
