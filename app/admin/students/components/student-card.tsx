@@ -32,6 +32,11 @@ interface StudentCardProps {
 export function StudentCard({ student }: StudentCardProps) {
     const completedSessions = student.slots.filter(s => s.status === "COMPLETED").length;
 
+    // Find next session
+    const nextSession = student.slots
+        .filter(s => s.status === "SCHEDULED" && new Date(s.startTime) > new Date())
+        .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())[0];
+
     // Deterministic emoji based on student ID to ensure it stays the same for the student
     const getFunAvatar = (id: string) => {
         const emojis = ["🦊", "🐼", "🦄", "🦁", "🐧", "🐸", "🐙", "🍄", "🚀", "🎨", "🎸", "⚡️", "🥑", "🍩", "🤖", "👻", "🐱", "🐶", "🦋", "🦖"];
@@ -89,8 +94,8 @@ export function StudentCard({ student }: StudentCardProps) {
                 <div className="flex-1"></div>
 
                 {/* 2. Stats Row - Cleaner & Bolder */}
-                <div className="flex items-center gap-6 pt-4 border-t border-slate-100 dark:border-slate-800/50">
-                    <div>
+                <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800/50">
+                    <div className="text-center">
                         <div className={`text-2xl font-black ${creditColor} tabular-nums leading-none tracking-tight drop-shadow-sm`}>
                             {student.credits}
                         </div>
@@ -99,12 +104,30 @@ export function StudentCard({ student }: StudentCardProps) {
                         </div>
                     </div>
                     <div className="w-px h-8 bg-slate-200 dark:bg-slate-700"></div>
-                    <div>
+                    <div className="text-center">
                         <div className="text-2xl font-black text-slate-700 dark:text-slate-300 tabular-nums leading-none tracking-tight">
                             {completedSessions}
                         </div>
                         <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mt-1">
                             Sessions
+                        </div>
+                    </div>
+                    <div className="w-px h-8 bg-slate-200 dark:bg-slate-700"></div>
+                    <div className="text-center min-w-[3rem]">
+                        <div className="text-sm font-bold text-indigo-600 dark:text-indigo-400 leading-tight">
+                            {nextSession ? (
+                                <>
+                                    {new Date(nextSession.startTime).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })}
+                                    <div className="text-[10px] font-medium opacity-80">
+                                        {new Date(nextSession.startTime).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}
+                                    </div>
+                                </>
+                            ) : (
+                                <span className="text-slate-300 text-lg">-</span>
+                            )}
+                        </div>
+                        <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mt-1">
+                            Upcoming
                         </div>
                     </div>
                 </div>
