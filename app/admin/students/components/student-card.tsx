@@ -1,13 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { User, Mail, Calendar, ArrowRight, Zap, Target } from "lucide-react";
+import { User, Mail, Calendar, ArrowRight, Zap, Target, Clock, Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { AddCreditDialog } from "./add-credit-dialog";
 import { BackfillDialog } from "./backfill-dialog";
 import { ScheduleSessionDialog } from "./schedule-session-dialog";
+import { format } from "date-fns";
 
 interface Slot {
     id: string;
@@ -113,49 +114,64 @@ export function StudentCard({ student }: StudentCardProps) {
                             Sessions
                         </div>
                     </div>
-                    <div className="w-px h-8 bg-slate-200 dark:bg-slate-700"></div>
-                    <div className="text-center min-w-[3rem]">
-                        <div className="text-sm font-bold text-indigo-600 dark:text-indigo-400 leading-tight">
-                            {nextSession ? (
-                                <>
-                                    {new Date(nextSession.startTime).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })}
-                                    <div className="text-[10px] font-medium opacity-80">
-                                        {new Date(nextSession.startTime).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}
-                                    </div>
-                                </>
-                            ) : (
-                                <span className="text-slate-300 text-lg">-</span>
-                            )}
-                        </div>
-                        <div className="flex items-center justify-center gap-1 mt-1">
-                            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                                Upcoming
+                </div>
+
+                {/* Dedicated Event Strip */}
+                <div className="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800">
+                    <div className="flex items-center justify-between p-3 rounded-lg bg-indigo-50/50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800/50">
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 rounded-full bg-white dark:bg-slate-900 text-indigo-600 shadow-sm border border-indigo-50 dark:border-slate-800">
+                                <Clock size={16} />
                             </div>
-                            <ScheduleSessionDialog studentId={student.id} />
+                            <div>
+                                <div className="text-xs font-semibold text-indigo-900 dark:text-indigo-100 uppercase tracking-wide opacity-70 mb-0.5">
+                                    Next Session
+                                </div>
+                                <div className="text-sm font-bold text-slate-700 dark:text-slate-200">
+                                    {nextSession ? (
+                                        <>
+                                            {format(nextSession.startTime, "MMM d")}
+                                            <span className="mx-1.5 opacity-40">|</span>
+                                            {format(nextSession.startTime, "h:mm a")}
+                                        </>
+                                    ) : (
+                                        <span className="text-slate-400 italic font-normal">No upcoming class</span>
+                                    )}
+                                </div>
+                            </div>
                         </div>
+                        <ScheduleSessionDialog
+                            studentId={student.id}
+                            trigger={
+                                <Button size="icon" className="h-8 w-8 rounded-full bg-white dark:bg-slate-900 text-indigo-600 border border-indigo-100 dark:border-slate-800 hover:bg-indigo-50 shadow-sm transition-all">
+                                    <Plus size={16} />
+                                </Button>
+                            }
+                        />
                     </div>
                 </div>
-            </CardContent>
+            </div>
+        </CardContent>
 
-            {/* 3. Action Footer - 3 Cols (Add, Backlog, Profile) */}
-            <CardFooter className="bg-white dark:bg-slate-950 p-0 border-t border-slate-100 dark:border-slate-800 grid grid-cols-3 divide-x divide-slate-100 dark:divide-slate-800">
+            {/* 3. Action Footer - 3 Cols (Add, Backlog, Profile) */ }
+    <CardFooter className="bg-white dark:bg-slate-950 p-0 border-t border-slate-100 dark:border-slate-800 grid grid-cols-3 divide-x divide-slate-100 dark:divide-slate-800">
 
-                <AddCreditDialog studentId={student.id} studentName={student.name} />
+        <AddCreditDialog studentId={student.id} studentName={student.name} />
 
-                <BackfillDialog studentId={student.id} studentName={student.name} />
+        <BackfillDialog studentId={student.id} studentName={student.name} />
 
-                <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-slate-600 hover:text-indigo-600 hover:bg-slate-50 text-xs h-10 rounded-none font-medium"
-                    asChild
-                >
-                    <Link href={`/admin/students/${student.id}`}>
-                        Profile
-                        <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
-                    </Link>
-                </Button>
-            </CardFooter>
-        </Card>
+        <Button
+            variant="ghost"
+            size="sm"
+            className="text-slate-600 hover:text-indigo-600 hover:bg-slate-50 text-xs h-10 rounded-none font-medium"
+            asChild
+        >
+            <Link href={`/admin/students/${student.id}`}>
+                Profile
+                <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+            </Link>
+        </Button>
+    </CardFooter>
+        </Card >
     );
 }
