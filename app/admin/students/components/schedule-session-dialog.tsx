@@ -100,58 +100,42 @@ export function ScheduleSessionDialog({ studentId, trigger }: { studentId: strin
                                 />
                             </PopoverContent>
                         </Popover>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="grid gap-2">
-                            <Label>Time</Label>
-                            <Select value={time} onValueChange={setTime}>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Time" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="09:00">9:00 AM</SelectItem>
-                                    <SelectItem value="09:30">9:30 AM</SelectItem>
-                                    <SelectItem value="10:00">10:00 AM</SelectItem>
-                                    <SelectItem value="10:30">10:30 AM</SelectItem>
-                                    <SelectItem value="11:00">11:00 AM</SelectItem>
-                                    <SelectItem value="11:30">11:30 AM</SelectItem>
-                                    <SelectItem value="12:00">12:00 PM</SelectItem>
-                                    <SelectItem value="13:00">1:00 PM</SelectItem>
-                                    <SelectItem value="14:00">2:00 PM</SelectItem>
-                                    <SelectItem value="15:00">3:00 PM</SelectItem>
-                                    <SelectItem value="16:00">4:00 PM</SelectItem>
-                                    <SelectItem value="17:00">5:00 PM</SelectItem>
-                                    <SelectItem value="18:00">6:00 PM</SelectItem>
-                                    <SelectItem value="19:00">7:00 PM</SelectItem>
-                                    <SelectItem value="20:00">8:00 PM</SelectItem>
-                                    <SelectItem value="21:00">9:00 PM</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div className="grid gap-2">
-                            <Label>Duration</Label>
-                            <Select value={duration} onValueChange={setDuration}>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Duration" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="30">30 Mins</SelectItem>
-                                    <SelectItem value="45">45 Mins</SelectItem>
-                                    <SelectItem value="60">1 Hour</SelectItem>
-                                    <SelectItem value="90">1.5 Hours</SelectItem>
-                                    <SelectItem value="120">2 Hours</SelectItem>
-                                    <SelectItem value="180">3 Hours</SelectItem>
-                                </SelectContent>
-                            </Select>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="grid gap-2">
+                                <Label>Time</Label>
+                                <div className="relative">
+                                    <input
+                                        type="time"
+                                        className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-800 dark:bg-slate-950 dark:ring-offset-slate-950 dark:placeholder:text-slate-400 dark:focus-visible:ring-indigo-800"
+                                        value={time}
+                                        onChange={(e) => setTime(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+                            <div className="grid gap-2">
+                                <Label>Duration</Label>
+                                <Select value={duration} onValueChange={setDuration}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Duration" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="30">30 Mins</SelectItem>
+                                        <SelectItem value="45">45 Mins</SelectItem>
+                                        <SelectItem value="60">1 Hour</SelectItem>
+                                        <SelectItem value="90">1.5 Hours</SelectItem>
+                                        <SelectItem value="120">2 Hours</SelectItem>
+                                        <SelectItem value="180">3 Hours</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <DialogFooter>
-                    <Button onClick={handleSchedule} disabled={!date || loading} className="bg-indigo-600 hover:bg-indigo-700">
-                        {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                        Schedule
-                    </Button>
-                </DialogFooter>
+                    <DialogFooter>
+                        <Button onClick={handleSchedule} disabled={!date || loading} className="bg-indigo-600 hover:bg-indigo-700">
+                            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                            Schedule
+                        </Button>
+                    </DialogFooter>
             </DialogContent>
         </Dialog>
     );
