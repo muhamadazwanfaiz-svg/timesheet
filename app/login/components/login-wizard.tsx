@@ -130,18 +130,19 @@ export function LoginWizard() {
                         <CardDescription>What should we call you?</CardDescription>
                     </>
                 )}
-                {step === "ONBOARDING_QUIZ" && (
-                    <>
-                        <CardTitle className="text-xl">Quick Personalization</CardTitle>
-                        <CardDescription>Help us tailor your learning path.</CardDescription>
-                    </>
-                )}
                 {step === "ONBOARDING_NAME" && (
                     <>
                         <CardTitle className="text-xl">Nice to meet you!</CardTitle>
                         <CardDescription>What should we call you?</CardDescription>
                     </>
                 )}
+                {step === "ONBOARDING_QUIZ" && (
+                    <>
+                        <CardTitle className="text-xl">Quick Personalization</CardTitle>
+                        <CardDescription>Help us tailor your learning path.</CardDescription>
+                    </>
+                )}
+
                 {step === "ONBOARDING_QUIZ" && (
                     <>
                         <CardTitle className="text-xl flex items-center gap-2">
@@ -255,6 +256,8 @@ export function LoginWizard() {
                         </Button>
                     </form>
                 )}
+
+
 
                 {step === "ONBOARDING_QUIZ" && (
                     <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
