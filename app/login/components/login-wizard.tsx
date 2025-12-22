@@ -130,12 +130,7 @@ export function LoginWizard() {
                         <CardDescription>What should we call you?</CardDescription>
                     </>
                 )}
-                {step === "ONBOARDING_NAME" && (
-                    <>
-                        <CardTitle className="text-xl">Nice to meet you!</CardTitle>
-                        <CardDescription>What should we call you?</CardDescription>
-                    </>
-                )}
+
                 {step === "ONBOARDING_QUIZ" && (
                     <>
                         <CardTitle className="text-xl">Quick Personalization</CardTitle>
@@ -256,6 +251,8 @@ export function LoginWizard() {
                         </Button>
                     </form>
                 )}
+
+
 
 
 
