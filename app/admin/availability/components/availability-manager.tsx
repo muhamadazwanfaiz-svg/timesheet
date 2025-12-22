@@ -88,7 +88,7 @@ export function AvailabilityManager({ date, slots }: AvailabilityManagerProps) {
             <div className="space-y-6">
                 <Card>
                     <CardHeader>
-                        <CardTitle>
+                        <CardTitle suppressHydrationWarning>
                             Manage Slots for {format(date, "MMMM d, yyyy")}
                         </CardTitle>
                     </CardHeader>
@@ -135,9 +135,9 @@ export function AvailabilityManager({ date, slots }: AvailabilityManagerProps) {
                                                 }`}
                                         >
                                             <div className="flex items-center gap-4">
-                                                <div className="font-medium font-mono text-sm">
-                                                    {format(slot.startTime, "h:mm a")} -{" "}
-                                                    {format(slot.endTime, "h:mm a")}
+                                                <div className="font-medium font-mono text-sm" suppressHydrationWarning>
+                                                    {format(new Date(slot.startTime), "h:mm a")} -{" "}
+                                                    {format(new Date(slot.endTime), "h:mm a")}
                                                 </div>
                                                 {slot.student && (
                                                     <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 text-sm">
