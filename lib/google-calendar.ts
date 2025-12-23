@@ -4,6 +4,7 @@ export function generateGoogleCalendarUrl(event: {
     startTime: Date;
     endTime: Date;
     location?: string;
+    guests?: string[];
 }) {
     // Format dates to YYYYMMDDTHHMMSSZ (UTC)
     const formatTime = (date: Date) => date.toISOString().replace(/-|:|\.\d\d\d/g, "");
@@ -18,6 +19,11 @@ export function generateGoogleCalendarUrl(event: {
     url.searchParams.append("dates", `${start}/${end}`);
     url.searchParams.append("details", event.details);
     if (event.location) url.searchParams.append("location", event.location);
+
+    // Add Guests (Comma separated emails)
+    if (event.guests && event.guests.length > 0) {
+        url.searchParams.append("add", event.guests.join(","));
+    }
 
     return url.toString();
 }

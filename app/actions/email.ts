@@ -29,7 +29,8 @@ export async function sendBookingConfirmation(slotId: string) {
         details: "Join Zoom Link: https://zoom.us/j/123456789", // Placeholder or dynamic if you have it
         startTime,
         endTime,
-        location: "Zoom"
+        location: "Zoom",
+        guests: ["venuslowshimin@gmail.com"] // Auto-add Tutor as guest
     });
 
     // 3. Prepare Email Content

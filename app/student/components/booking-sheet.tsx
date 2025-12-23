@@ -39,8 +39,9 @@ export function BookingSheet({ isOpen, onClose, selectedDate, studentId, student
         const end = slot.endTime.toISOString().replace(/-|:|\.\d\d\d/g, "");
         const title = encodeURIComponent("SEO Class with Tutor");
         const details = encodeURIComponent("Join via Zoom. Check your email for full details.");
+        const guest = encodeURIComponent("venuslowshimin@gmail.com");
 
-        return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${start}/${end}&details=${details}`;
+        return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${start}/${end}&details=${details}&add=${guest}`;
     };
 
     // Fetch slots when date changes
