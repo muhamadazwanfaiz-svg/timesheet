@@ -13,7 +13,7 @@ export async function Header() {
             <div className="container flex h-16 items-center justify-between px-4 md:px-8">
                 <div className="flex items-center gap-2 font-bold text-2xl tracking-tight">
                     <Link href="/" className="bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent hover:opacity-80 transition-opacity">
-                        Timesheet
+                        SEO Laoshi
                     </Link>
                 </div>
 
@@ -21,16 +21,16 @@ export async function Header() {
                     {/* Student Link */}
                     {studentId ? (
                         <div className="flex items-center gap-2">
-                            <Button asChild variant="ghost" className="hidden sm:flex text-slate-600 hover:text-indigo-600 dark:text-slate-300 dark:hover:text-indigo-400">
+                            <Button asChild variant="ghost" className="text-slate-600 hover:text-indigo-600 dark:text-slate-300 dark:hover:text-indigo-400">
                                 <Link href="/student/profile">
                                     <User size={16} className="mr-2" />
-                                    Profile
+                                    <span className="hidden sm:inline">Profile</span>
                                 </Link>
                             </Button>
                             <StudentLogoutButton />
                         </div>
                     ) : (
-                        <Button asChild variant="ghost" className="hidden sm:flex text-slate-600 hover:text-indigo-600 dark:text-slate-300 dark:hover:text-indigo-400">
+                        <Button asChild variant="ghost" className="text-slate-600 hover:text-indigo-600 dark:text-slate-300 dark:hover:text-indigo-400">
                             <Link href="/login">
                                 Student Login
                             </Link>
