@@ -92,7 +92,7 @@ export default async function StudentDashboardPage() {
 
                         {settings.showSessions && (
                             <Button variant="ghost" className="w-full justify-start text-slate-600 dark:text-slate-400" asChild>
-                                <Link href="#">
+                                <Link href="/student/sessions">
                                     <CalendarDays className="mr-3 h-5 w-5" />
                                     Sessions
                                 </Link>
@@ -215,10 +215,13 @@ export default async function StudentDashboardPage() {
 
                     {/* Recent History */}
                     <div>
-                        <h3 className="text-lg font-semibold text-slate-900/80 mb-3 px-1">Session History</h3>
+                        <div className="flex items-center justify-between mb-3 px-1">
+                            <h3 className="text-lg font-semibold text-slate-900/80">Session History</h3>
+                            <Link href="/student/sessions" className="text-sm text-indigo-600 hover:underline">View All</Link>
+                        </div>
                         <div className="space-y-3">
                             {student.slots.length === 0 && <p className="text-slate-500 italic px-1">No history yet.</p>}
-                            {student.slots.map(slot => (
+                            {student.slots.slice(0, 3).map(slot => (
                                 <div key={slot.id} className="bg-white p-4 rounded-lg border shadow-sm space-y-3">
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-4">
@@ -251,15 +254,10 @@ export default async function StudentDashboardPage() {
                 {/* 3. RIGHT COLUMN: Utility (Span 3) */}
                 <aside className="lg:col-span-3 space-y-6">
 
-                    {/* Quick Book */}
+                    {/* Quick Book - SWAPPED ORDER */}
                     <div className="sticky top-24 space-y-6">
-                        <Button asChild className="w-full h-14 text-lg bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 shadow-lg shadow-indigo-200 dark:shadow-none transition-all hover:scale-[1.02]">
-                            <Link href="/book">
-                                Book New Session
-                            </Link>
-                        </Button>
 
-                        {/* Calendar Widget */}
+                        {/* 1. Calendar Widget (Moved to TOP) */}
                         <Card className="border-0 shadow-sm bg-white/50 backdrop-blur-sm">
                             <CardContent className="p-0 flex justify-center pt-4 pb-2">
                                 <Calendar
@@ -270,18 +268,40 @@ export default async function StudentDashboardPage() {
                             </CardContent>
                         </Card>
 
-                        {/* Badges Grid */}
+                        {/* 2. Button (Moved Below) */}
+                        <Button asChild className="w-full h-14 text-lg bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 shadow-lg shadow-indigo-200 dark:shadow-none transition-all hover:scale-[1.02]">
+                            <Link href="/book">
+                                Book New Session
+                            </Link>
+                        </Button>
+
+                        {/* Badges Grid - IMPLEMENTED */}
                         <Card>
                             <CardHeader className="pb-3">
                                 <CardTitle className="text-sm uppercase tracking-wider text-slate-500 font-semibold">Achievements</CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <div className="grid grid-cols-3 gap-2">
-                                    {[1, 2, 3, 4, 5, 6].map((i) => (
-                                        <div key={i} className="aspect-square bg-slate-100 rounded-lg flex items-center justify-center text-slate-300 hover:bg-indigo-50 hover:text-indigo-400 transition-colors cursor-help" title="Locked Achievement">
-                                            <Target size={20} />
-                                        </div>
-                                    ))}
+                                    {[
+                                        { count: 1, icon: <Target size={18} />, label: "First Class" },
+                                        { count: 5, icon: <Zap size={18} />, label: "5 Classes" },
+                                        { count: 10, icon: <Trophy size={18} />, label: "10 Classes" },
+                                        { count: 20, icon: <BookOpen size={18} />, label: "Scholar" },
+                                        { count: 50, icon: <GraduationCap size={18} />, label: "Expert" },
+                                        { count: 100, icon: <ExternalLink size={18} />, label: "Legend" },
+                                    ].map((ach, i) => {
+                                        const isUnlocked = completedSlots.length >= ach.count;
+                                        return (
+                                            <div
+                                                key={i}
+                                                className={`aspect-square rounded-lg flex flex-col items-center justify-center text-xs text-center p-1 transition-all ${isUnlocked ? 'bg-indigo-50 text-indigo-600 border border-indigo-200 shadow-sm' : 'bg-slate-50 text-slate-300 grayscale'}`}
+                                                title={isUnlocked ? `Unlocked: ${ach.label}` : `Locked: Reach ${ach.count} classes`}
+                                            >
+                                                <div className="mb-1">{ach.icon}</div>
+                                                <span className="leading-none scale-90">{ach.label}</span>
+                                            </div>
+                                        );
+                                    })}
                                 </div>
                             </CardContent>
                         </Card>
