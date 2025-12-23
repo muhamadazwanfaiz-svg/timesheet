@@ -44,6 +44,11 @@ export async function sendBookingConfirmation(slotId: string) {
 
     // 4. Send Email via Resend
     try {
+        if (!resend) {
+            console.warn("Resend API Key missing. Skipping email.");
+            return;
+        }
+
         const { error } = await resend.emails.send({
             from: EMAIL_FROM,
             to: [student.email, "venuslowshimin@gmail.com"], // Send to Student AND Tutor (Admin)
@@ -53,10 +58,10 @@ export async function sendBookingConfirmation(slotId: string) {
 
         if (error) {
             console.error("Resend Error:", error);
-            throw new Error("Failed to send email");
+            // Don't throw, just log. Email is secondary to booking success.
+        } else {
+            console.log(`Email sent successfully to ${student.email}`);
         }
-
-        console.log(`Email sent successfully to ${student.email}`);
     } catch (e) {
         console.error("Email sending exception:", e);
         // Don't throw to prevent blocking the UI, just log it.
