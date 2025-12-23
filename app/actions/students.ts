@@ -6,7 +6,7 @@ import { revalidatePath } from "next/cache";
 export async function getStudents() {
     return await prisma.student.findMany({
         orderBy: [
-            { credits: "asc" },
+            { credits: "desc" },
             { name: "asc" }
         ],
         include: { slots: true },
