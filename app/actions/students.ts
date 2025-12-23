@@ -9,7 +9,19 @@ export async function getStudents() {
             { credits: "desc" },
             { name: "asc" }
         ],
-        include: { slots: true },
+        include: {
+            _count: {
+                select: { slots: { where: { status: "COMPLETED" } } }
+            },
+            slots: {
+                where: {
+                    status: "SCHEDULED",
+                    endTime: { gt: new Date() }
+                },
+                orderBy: { startTime: "asc" },
+                take: 3
+            }
+        },
     });
 }
 
@@ -19,9 +31,11 @@ export async function getStudentDetails(id: string) {
         include: {
             slots: {
                 orderBy: { startTime: "desc" },
+                take: 50
             },
             transactions: {
                 orderBy: { createdAt: "desc" },
+                take: 50
             },
         },
     });

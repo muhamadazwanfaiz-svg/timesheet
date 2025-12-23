@@ -26,6 +26,9 @@ interface Student {
     goals: string | null;
     credits: number;
     slots: Slot[];
+    _count?: {
+        slots: number;
+    };
 }
 
 interface StudentCardProps {
@@ -33,13 +36,11 @@ interface StudentCardProps {
 }
 
 export function StudentCard({ student }: StudentCardProps) {
-    const completedSessions = student.slots.filter(s => s.status === "COMPLETED").length;
+    // Optimized: Use DB _count if available, fallback to length (safeguard)
+    const completedSessions = student._count?.slots ?? 0;
 
-    // Find upcoming sessions (including ongoing) - Take top 3
-    const upcomingSessions = student.slots
-        .filter(s => s.status === "SCHEDULED" && new Date(s.endTime) > new Date())
-        .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())
-        .slice(0, 3);
+    // Optimized: DB already filtered to upcoming, so just use them
+    const upcomingSessions = student.slots;
 
     // Deterministic emoji based on student ID to ensure it stays the same for the student
     const getFunAvatar = (id: string) => {

@@ -10,8 +10,10 @@ export default async function AvailabilityPage({
     const { date: dateStr } = await searchParams;
     const date = dateStr ? new Date(dateStr) : new Date();
 
-    const availability = await getAvailability(date);
-    const bookings = await getBookings(date);
+    const [availability, bookings] = await Promise.all([
+        getAvailability(date),
+        getBookings(date)
+    ]);
 
     return (
         <div className="space-y-6">
