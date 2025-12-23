@@ -104,6 +104,7 @@ export async function loginStudent(formData: FormData) {
         cookieStore.set("admin_session", "true", {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
             maxAge: 60 * 60 * 24, // 1 day
             path: "/",
         });
@@ -137,6 +138,7 @@ export async function loginStudent(formData: FormData) {
     cookieStore.set("student_id", student.id, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
         maxAge: 60 * 60 * 24 * 7, // 1 week
         path: "/",
     });
