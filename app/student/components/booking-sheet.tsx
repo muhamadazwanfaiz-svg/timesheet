@@ -16,6 +16,7 @@ interface BookingSheetProps {
     onClose: () => void;
     selectedDate: Date | undefined;
     studentId: string;
+    studentName: string;
     studentCredits: number;
 }
 
@@ -25,7 +26,7 @@ interface CalculatedSlot {
     available: boolean;
 }
 
-export function BookingSheet({ isOpen, onClose, selectedDate, studentId, studentCredits }: BookingSheetProps) {
+export function BookingSheet({ isOpen, onClose, selectedDate, studentId, studentName, studentCredits }: BookingSheetProps) {
     const router = useRouter();
     const [slots, setSlots] = React.useState<CalculatedSlot[]>([]);
     const [loadingSlots, setLoadingSlots] = React.useState(false);
@@ -37,8 +38,10 @@ export function BookingSheet({ isOpen, onClose, selectedDate, studentId, student
     const generateCalendarUrl = (slot: CalculatedSlot) => {
         const start = slot.startTime.toISOString().replace(/-|:|\.\d\d\d/g, "");
         const end = slot.endTime.toISOString().replace(/-|:|\.\d\d\d/g, "");
-        const title = encodeURIComponent("SEO Class with Tutor");
-        const details = encodeURIComponent("Join via Zoom. Check your email for full details.");
+
+        // Custom Title and Description as requested
+        const title = encodeURIComponent(`SEO Class with ${studentName}`);
+        const details = encodeURIComponent(`Class with ${studentName} on ${format(slot.startTime, "MMMM d, EEEE")}`);
         const guest = encodeURIComponent("venuslowshimin@gmail.com");
 
         return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${start}/${end}&details=${details}&add=${guest}`;
@@ -118,15 +121,17 @@ export function BookingSheet({ isOpen, onClose, selectedDate, studentId, student
                                 </p>
                             </div>
 
-                            <Button
-                                className="w-full h-14 text-lg bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-100 rounded-xl relative overflow-hidden group animate-pulse-slow"
-                                asChild
-                            >
-                                <a href={generateCalendarUrl(successSlot)} target="_blank" rel="noopener noreferrer">
-                                    <span className="mr-2 group-hover:animate-bounce">📅</span>
-                                    <span className="font-semibold">Add to Google Calendar</span>
-                                </a>
-                            </Button>
+                            <div className="flex justify-center">
+                                <Button
+                                    className="w-auto px-8 h-14 text-lg bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-100 rounded-xl relative overflow-hidden group animate-bounce-gentle"
+                                    asChild
+                                >
+                                    <a href={generateCalendarUrl(successSlot)} target="_blank" rel="noopener noreferrer">
+                                        <span className="mr-2">📅</span>
+                                        <span className="font-semibold">Add to Google Calendar</span>
+                                    </a>
+                                </Button>
+                            </div>
 
                             <p className="text-center text-sm text-slate-500 px-4 mt-4">
                                 Please add this event to your Google Calendar to receive the meeting link.

@@ -11,10 +11,11 @@ import { cn } from "@/lib/utils";
 
 interface DashboardBookingWidgetProps {
     studentId: string;
+    studentName: string;
     studentCredits: number;
 }
 
-export function DashboardBookingWidget({ studentId, studentCredits }: DashboardBookingWidgetProps) {
+export function DashboardBookingWidget({ studentId, studentName, studentCredits }: DashboardBookingWidgetProps) {
     const [date, setDate] = React.useState<Date | undefined>(new Date());
     const [isSheetOpen, setIsSheetOpen] = React.useState(false);
 
@@ -70,6 +71,7 @@ export function DashboardBookingWidget({ studentId, studentCredits }: DashboardB
                 onClose={() => setIsSheetOpen(false)}
                 selectedDate={date}
                 studentId={studentId}
+                studentName={studentName}
                 studentCredits={studentCredits}
             />
         </div>

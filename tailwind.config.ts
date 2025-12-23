@@ -74,6 +74,10 @@ const config = {
                 "slide-up-fade": {
                     '0%': { opacity: '0', transform: 'translateY(20px)' },
                     '100%': { opacity: '1', transform: 'translateY(0)' },
+                },
+                "bounce-gentle": {
+                    '0%, 100%': { transform: 'translateY(-5%)', animationTimingFunction: 'cubic-bezier(0.8, 0, 1, 1)' },
+                    '50%': { transform: 'translateY(0)', animationTimingFunction: 'cubic-bezier(0, 0, 0.2, 1)' }
                 }
             },
             animation: {
@@ -82,7 +86,8 @@ const config = {
                 "float": "float 6s ease-in-out infinite",
                 "float-delayed": "float 6s ease-in-out 3s infinite",
                 "pulse-slow": "pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-                "slide-up-fade": "slide-up-fade 0.5s ease-out forwards"
+                "slide-up-fade": "slide-up-fade 0.5s ease-out forwards",
+                "bounce-gentle": "bounce-gentle 2s infinite"
             }
         }
     },

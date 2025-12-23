@@ -233,6 +233,7 @@ export default async function StudentDashboardPage() {
                     {/* Integrated Booking Widget */}
                     <DashboardBookingWidget
                         studentId={student.id}
+                        studentName={student.name}
                         studentCredits={student.credits}
                     />
 
