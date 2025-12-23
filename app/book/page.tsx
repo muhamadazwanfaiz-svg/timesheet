@@ -1,4 +1,4 @@
-import { getSlots } from "@/app/actions/availability";
+import { getAvailability, getBookings, getCalculatedSlots } from "@/app/actions/availability";
 import { BookingView } from "./components/booking-view";
 import { addDays } from "date-fns";
 import { cookies } from "next/headers";
@@ -21,12 +21,6 @@ export default async function BookingPage({
     // Fetch student credits and active reservations
     const student = await prisma.student.findUnique({
         where: { id: studentId },
-        select: {
-            id: true,
-            email: true,
-            name: true,
-            credits: true
-        },
     });
 
     if (!student) {
@@ -47,14 +41,9 @@ export default async function BookingPage({
     const selectedDate = dateStr ? new Date(dateStr) : today;
 
     // Fetch slots for next 14 days
-    const endDate = addDays(today, 14);
-    const slots = await getSlots(today, endDate);
-
-    // Sanitize
-    const availableSlots = slots.map(({ student, ...slot }) => ({
-        ...slot,
-        studentId: slot.studentId as string | null,
-    }));
+    // Fetch available slots
+    // const endDate = addDays(today, 14); // We might need this for the calendar view if we want to pre-fetch, but for now let's just stick to daily
+    const calculatedSlots = await getCalculatedSlots(selectedDate, student.id);
 
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-slate-950 py-8 px-4 flex flex-col justify-center">
@@ -92,11 +81,9 @@ export default async function BookingPage({
             </div>
 
             <BookingView
-                selectedDate={selectedDate}
-                slots={availableSlots}
-                startDate={today}
+                date={selectedDate}
                 student={student}
-                effectiveBalance={student.credits - activeReservations}
+                slots={calculatedSlots}
             />
         </div>
     );

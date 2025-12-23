@@ -2,8 +2,8 @@
 
 import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
-
 import { cookies } from "next/headers";
+import { getViableStartTimes } from "@/app/lib/booking-logic";
 
 async function requireAdmin() {
     const cookieStore = await cookies();
@@ -11,71 +11,114 @@ async function requireAdmin() {
     if (!isAdmin) throw new Error("Unauthorized");
 }
 
-export async function getSlots(date: Date, endDate?: Date) {
-    // Get slots for a specific date or range
+export async function getAvailability(date: Date) {
     const start = new Date(date);
     start.setHours(0, 0, 0, 0);
-
-    const end = endDate ? new Date(endDate) : new Date(date);
+    const end = new Date(date);
     end.setHours(23, 59, 59, 999);
 
-    return await prisma.slot.findMany({
+    return await prisma.availability.findMany({
         where: {
             startTime: {
                 gte: start,
                 lte: end,
             },
         },
-        include: { student: true }, // See who booked it
         orderBy: { startTime: "asc" },
     });
 }
 
-export async function createSlot(startTime: Date, endTime: Date, recurrenceWeeks: number = 0) {
-    await requireAdmin();
-    // Validate basic logic
-    if (startTime >= endTime) {
-        throw new Error("End time must be after start time");
-    }
+// Admin needs to see actual bookings
+export async function getBookings(date: Date) {
+    const start = new Date(date);
+    start.setHours(0, 0, 0, 0);
+    const end = new Date(date);
+    end.setHours(23, 59, 59, 999);
 
-    const slotsToCreate = [];
+    return await prisma.slot.findMany({
+        where: {
+            startTime: { gte: start, lte: end },
+            status: { not: "CANCELED" }
+        },
+        include: { student: true },
+        orderBy: { startTime: "asc" },
+    });
+}
 
-    // Create current slot + future recurring slots
-    // loop i from 0 to recurrenceWeeks. 0 = today/base date.
-    for (let i = 0; i <= recurrenceWeeks; i++) {
-        const start = new Date(startTime);
-        start.setDate(start.getDate() + (i * 7)); // Add 7 days per week
+export async function getCalculatedSlots(date: Date, studentId?: string) {
+    // 1. Get raw availability for the day
+    const start = new Date(date);
+    start.setHours(0, 0, 0, 0);
+    const end = new Date(date);
+    end.setHours(23, 59, 59, 999);
 
-        const end = new Date(endTime);
-        end.setDate(end.getDate() + (i * 7));
-
-        slotsToCreate.push({
-            startTime: start,
-            endTime: end,
-        });
-    }
-
-    await prisma.slot.createMany({
-        data: slotsToCreate,
+    const availability = await prisma.availability.findMany({
+        where: {
+            startTime: { gte: start, lte: end },
+        },
     });
 
+    // 2. Get existing bookings (Slots) for the day
+    // Note: Bookings might overlap into this day from previous day, or into next.
+    // Ideally we fetch a bit wider range, but for now simple day query.
+    const bookings = await prisma.slot.findMany({
+        where: {
+            startTime: { gte: start, lte: end },
+            status: { not: "CANCELED" }
+        },
+    });
+
+    // 3. Determine Duration
+    let durationMinutes = 60; // Default
+    if (studentId) {
+        const student = await prisma.student.findUnique({ where: { id: studentId } });
+        if (student) durationMinutes = student.defaultDurationMinutes;
+    }
+
+    // 4. Calculate
+    const validStartTimes = getViableStartTimes(availability, bookings, durationMinutes);
+
+    return validStartTimes.map(time => ({
+        startTime: time,
+        endTime: new Date(time.getTime() + durationMinutes * 60000),
+        available: true
+    }));
+}
+
+export async function createAvailability(startTime: Date, endTime: Date) {
+    await requireAdmin();
+    if (startTime >= endTime) throw new Error("End time must be after start time");
+
+    await prisma.availability.create({
+        data: {
+            startTime,
+            endTime
+        }
+    });
+
+    revalidatePath("/admin/availability");
+    revalidatePath("/book");
+}
+
+export async function deleteAvailability(id: string) {
+    await requireAdmin();
+    await prisma.availability.delete({ where: { id } });
     revalidatePath("/admin/availability");
     revalidatePath("/book");
 }
 
 export async function deleteSlot(id: string) {
     await requireAdmin();
-    await prisma.slot.delete({
-        where: { id },
-    });
-
+    await prisma.slot.delete({ where: { id } });
     revalidatePath("/admin/availability");
-    revalidatePath("/book");
+    revalidatePath("/admin");
 }
 
+// Keeping this for now if admin wants to ensure specific recurring Availability
+// Replaces the old createRecurringAvailability and the nested broken code
 export async function generateRecurringSlots(
     days: number[], // 0=Sun, 1=Mon, ...
-    time: string, // "14:00"
+    startTime: string, // "14:00"
     durationMinutes: number,
     startDateStr: string,
     endDateStr: string
@@ -83,39 +126,34 @@ export async function generateRecurringSlots(
     await requireAdmin();
     const startDate = new Date(startDateStr);
     const endDate = new Date(endDateStr);
-    const [hour, minute] = time.split(":").map(Number);
 
-    // Safety check
-    if (isNaN(hour) || isNaN(minute)) throw new Error("Invalid time format");
+    // Parse start time
+    const [startHour, startMinute] = startTime.split(":").map(Number);
 
-    const slotsToCreate = [];
+    if (isNaN(startHour) || isNaN(startMinute)) {
+        throw new Error("Invalid time format");
+    }
 
-    // Loop loop loop
+    const availabilitiesToCreate = [];
+
+    // Loop through dates
     const current = new Date(startDate);
-    // Reset time part of current loop pointer to avoid drift, though we only check date part for loop
     current.setHours(0, 0, 0, 0);
     endDate.setHours(23, 59, 59, 999);
 
     while (current <= endDate) {
         if (days.includes(current.getDay())) {
-            // It's a match!
-            const slotStart = new Date(current);
-            slotStart.setHours(hour, minute, 0, 0);
+            // Create start time for this day
+            const start = new Date(current);
+            start.setHours(startHour, startMinute, 0, 0);
 
-            const slotEnd = new Date(slotStart);
-            slotEnd.setMinutes(slotEnd.getMinutes() + durationMinutes);
+            // Calculate end time based on duration
+            const end = new Date(start.getTime() + durationMinutes * 60000);
 
-            const existing = await prisma.slot.findFirst({
-                where: {
-                    startTime: slotStart
-                }
-            });
-
-            if (!existing) {
-                slotsToCreate.push({
-                    startTime: slotStart,
-                    endTime: slotEnd,
-                    status: "SCHEDULED"
+            if (start < end) {
+                availabilitiesToCreate.push({
+                    startTime: start,
+                    endTime: end,
                 });
             }
         }
@@ -123,14 +161,15 @@ export async function generateRecurringSlots(
         current.setDate(current.getDate() + 1);
     }
 
-    if (slotsToCreate.length > 0) {
-        await prisma.slot.createMany({
-            data: slotsToCreate
+    if (availabilitiesToCreate.length > 0) {
+        await prisma.availability.createMany({
+            data: availabilitiesToCreate,
         });
     }
 
     revalidatePath("/admin/availability");
     revalidatePath("/book");
 
-    return { created: slotsToCreate.length };
+    return { created: availabilitiesToCreate.length };
 }
+

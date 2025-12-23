@@ -6,11 +6,11 @@ import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { createSlot, deleteSlot } from "@/app/actions/availability";
+import { createAvailability, deleteAvailability, deleteSlot } from "@/app/actions/availability";
 import { toast } from "sonner";
-import { Slot, Student } from "@prisma/client";
+import { Slot, Availability, Student } from "@prisma/client";
 import { format } from "date-fns";
-import { Trash2, User } from "lucide-react";
+import { Trash2, User, Clock } from "lucide-react";
 
 interface SlotWithStudent extends Slot {
     student: Student | null;
@@ -18,14 +18,14 @@ interface SlotWithStudent extends Slot {
 
 interface AvailabilityManagerProps {
     date: Date;
-    slots: SlotWithStudent[];
+    availability: Availability[];
+    bookings: SlotWithStudent[];
 }
 
-export function AvailabilityManager({ date, slots }: AvailabilityManagerProps) {
+export function AvailabilityManager({ date, availability, bookings }: AvailabilityManagerProps) {
     const router = useRouter();
-    const [startTime, setStartTime] = React.useState("09:00");
-    const [duration, setDuration] = React.useState("60");
-    const [isRecurring, setIsRecurring] = React.useState(false);
+    const [startTime, setStartTime] = React.useState("19:00");
+    const [endTime, setEndTime] = React.useState("22:00");
     const [loading, setLoading] = React.useState(false);
 
     const [optimisticDate, setOptimisticDate] = React.useState(date);
@@ -43,41 +43,48 @@ export function AvailabilityManager({ date, slots }: AvailabilityManagerProps) {
         }
     }
 
-    async function handleAddSlot() {
+    async function handleAddAvailability() {
         setLoading(true);
         try {
-            // Construct Date objects from the time strings + current selected date
             const [startH, startM] = startTime.split(":").map(Number);
-            const durationMins = parseInt(duration);
+            const [endH, endM] = endTime.split(":").map(Number);
 
             const start = new Date(date);
             start.setHours(startH, startM, 0, 0);
 
-            const end = new Date(start);
-            end.setMinutes(start.getMinutes() + durationMins);
+            const end = new Date(date);
+            end.setHours(endH, endM, 0, 0);
 
             if (start >= end) {
-                toast.error("Invalid time info");
+                toast.error("End time must be after start time");
                 return;
             }
 
-            // Default to 4 weeks if recurring is checked
-            const recurrenceWeeks = isRecurring ? 4 : 0;
-            await createSlot(start, end, recurrenceWeeks);
-            toast.success(isRecurring ? "Recurring slots added" : "Slot added");
+            await createAvailability(start, end);
+            toast.success("Availability added");
         } catch (e: any) {
-            toast.error(e.message || "Failed to add slot");
+            toast.error(e.message || "Failed to add availability");
         } finally {
             setLoading(false);
         }
     }
 
-    async function handleDelete(id: string) {
+    async function handleDeleteAvailability(id: string) {
         try {
-            await deleteSlot(id);
-            toast.success("Slot removed");
+            await deleteAvailability(id);
+            toast.success("Availability removed");
         } catch (e) {
-            toast.error("Failed to remove slot");
+            toast.error("Failed to remove availability");
+        }
+    }
+
+    async function handleCancelBooking(id: string) {
+        if (!confirm("Are you sure you want to cancel this booking?")) return;
+        try {
+            await deleteSlot(id); // Using deleteSlot to cancel/remove the booking
+            toast.success("Booking cancelled");
+        } catch (e) {
+            toast.error("Failed to cancel booking");
         }
     }
 
@@ -96,12 +103,11 @@ export function AvailabilityManager({ date, slots }: AvailabilityManagerProps) {
                 </Card>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-8">
+                {/* 1. Add Availability Section */}
                 <Card>
                     <CardHeader>
-                        <CardTitle suppressHydrationWarning>
-                            Manage Slots for {format(optimisticDate, "MMMM d, yyyy")}
-                        </CardTitle>
+                        <CardTitle>Manage Availability for {format(optimisticDate, "MMMM d, yyyy")}</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="flex items-end gap-3 mb-6">
@@ -114,90 +120,76 @@ export function AvailabilityManager({ date, slots }: AvailabilityManagerProps) {
                                 />
                             </div>
                             <div className="grid gap-1.5 flex-1">
-                                <label className="text-sm font-medium">Duration</label>
-                                <select
-                                    className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-800 dark:bg-slate-950 dark:ring-offset-slate-950 dark:placeholder:text-slate-400 dark:focus-visible:ring-indigo-800"
-                                    value={duration}
-                                    onChange={(e) => setDuration(e.target.value)}
-                                >
-                                    <option value="30">30 Minutes</option>
-                                    <option value="45">45 Minutes</option>
-                                    <option value="60">1 Hour</option>
-                                    <option value="90">1.5 Hours</option>
-                                    <option value="120">2 Hours</option>
-                                    <option value="180">3 Hours</option>
-                                </select>
-                            </div>
-                            <Button onClick={handleAddSlot} disabled={loading}>
-                                {loading ? "Adding..." : "Add Slot"}
-                            </Button>
-                        </div>
-
-                        <div className="flex items-center space-x-2 -mt-2 mb-6 ml-1">
-                            <div className="flex items-center space-x-2">
-                                <input
-                                    type="checkbox"
-                                    id="recurring"
-                                    checked={isRecurring}
-                                    onChange={(e) => setIsRecurring(e.target.checked)}
-                                    className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-600 cursor-pointer"
+                                <label className="text-sm font-medium">End Time</label>
+                                <Input
+                                    type="time"
+                                    value={endTime}
+                                    onChange={(e) => setEndTime(e.target.value)}
                                 />
-                                <label
-                                    htmlFor="recurring"
-                                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer text-slate-600"
-                                >
-                                    Repeat Weekly (next 4 weeks)
-                                </label>
                             </div>
-                        </div>
-
-                        <div className="space-y-4">
-                            <h3 className="font-medium text-sm text-slate-500">
-                                {slots.length} Available Slots
-                            </h3>
-
-                            {slots.length === 0 ? (
-                                <div className="text-sm text-slate-400 italic">
-                                    No slots added for this day.
-                                </div>
-                            ) : (
-                                <div className="grid gap-3">
-                                    {slots.map((slot) => (
-                                        <div
-                                            key={slot.id}
-                                            className={`flex items-center justify-between p-3 rounded-lg border ${slot.studentId
-                                                ? "bg-indigo-50 border-indigo-200 dark:bg-indigo-900/20 dark:border-indigo-800"
-                                                : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800"
-                                                }`}
-                                        >
-                                            <div className="flex items-center gap-4">
-                                                <div className="font-medium font-mono text-sm" suppressHydrationWarning>
-                                                    {format(new Date(slot.startTime), "h:mm a")} -{" "}
-                                                    {format(new Date(slot.endTime), "h:mm a")}
-                                                </div>
-                                                {slot.student && (
-                                                    <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 text-sm">
-                                                        <User size={14} />
-                                                        <span>Booked by {slot.student.name}</span>
-                                                    </div>
-                                                )}
-                                            </div>
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                onClick={() => handleDelete(slot.id)}
-                                                className="text-slate-400 hover:text-red-500"
-                                            >
-                                                <Trash2 size={16} />
-                                            </Button>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
+                            <Button onClick={handleAddAvailability} disabled={loading}>
+                                {loading ? "Adding..." : "Add Availability"}
+                            </Button>
                         </div>
                     </CardContent>
                 </Card>
+
+                {/* 2. List Availability Ranges */}
+                <div className="space-y-4">
+                    <h3 className="font-semibold text-lg flex items-center gap-2">
+                        <Clock className="w-5 h-5" />
+                        Availability Windows
+                    </h3>
+                    {availability.length === 0 ? (
+                        <p className="text-slate-500 italic">No availability set for this day.</p>
+                    ) : (
+                        <div className="grid gap-3">
+                            {availability.map((range) => (
+                                <div key={range.id} className="flex items-center justify-between p-4 bg-white dark:bg-slate-900 border rounded-lg">
+                                    <span className="font-mono font-medium">
+                                        {format(new Date(range.startTime), "h:mm a")} - {format(new Date(range.endTime), "h:mm a")}
+                                    </span>
+                                    <Button variant="ghost" size="sm" onClick={() => handleDeleteAvailability(range.id)} className="text-red-500 hover:text-red-600 hover:bg-red-50">
+                                        <Trash2 size={16} />
+                                    </Button>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                {/* 3. List Actual Bookings */}
+                <div className="space-y-4">
+                    <h3 className="font-semibold text-lg flex items-center gap-2">
+                        <User className="w-5 h-5" />
+                        Confirmed Bookings
+                    </h3>
+                    {bookings.length === 0 ? (
+                        <p className="text-slate-500 italic">No bookings yet.</p>
+                    ) : (
+                        <div className="grid gap-3">
+                            {bookings.map((slot) => (
+                                <div key={slot.id} className="flex items-center justify-between p-4 bg-indigo-50 dark:bg-indigo-900/10 border border-indigo-100 dark:border-indigo-800 rounded-lg">
+                                    <div>
+                                        <div className="font-mono font-bold text-indigo-900 dark:text-indigo-100">
+                                            {format(new Date(slot.startTime), "h:mm a")} - {format(new Date(slot.endTime), "h:mm a")}
+                                        </div>
+                                        {slot.student && (
+                                            <div className="text-sm text-indigo-600 dark:text-indigo-300 mt-1">
+                                                {slot.student.name} ({slot.student.email})
+                                            </div>
+                                        )}
+                                    </div>
+                                    <Button variant="ghost" size="sm" onClick={() => handleCancelBooking(slot.id)} className="text-slate-400 hover:text-red-500">
+                                        Cancel
+                                    </Button>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );
 }
+

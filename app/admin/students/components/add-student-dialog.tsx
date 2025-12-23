@@ -110,6 +110,21 @@ export function AddStudentDialog() {
                                 </SelectContent>
                             </Select>
                         </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="defaultDurationMinutes" className="text-right">
+                                Duration
+                            </Label>
+                            <Select name="defaultDurationMinutes" defaultValue="60">
+                                <SelectTrigger className="col-span-3">
+                                    <SelectValue placeholder="Select session duration" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="60">1 Hour</SelectItem>
+                                    <SelectItem value="90">1.5 Hours</SelectItem>
+                                    <SelectItem value="120">2 Hours</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
                     </div>
                     <DialogFooter>
                         <Button type="submit" disabled={loading}>

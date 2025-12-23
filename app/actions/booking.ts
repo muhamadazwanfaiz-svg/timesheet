@@ -2,58 +2,88 @@
 
 import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
+import { areIntervalsOverlapping } from "date-fns";
+import { getAvailability } from "./availability";
 
-export async function bookSlot(slotId: string, studentId: string) {
-    // 1. Find student
+// NEW: Dynamic Booking Action
+export async function bookSession(startTime: Date, studentId: string) {
+    // 1. Find student & get duration
     const student = await prisma.student.findUnique({
         where: { id: studentId },
     });
 
-    if (!student) {
-        throw new Error("Student not found.");
-    }
+    if (!student) throw new Error("Student not found.");
 
-    // 2. Check if student has credits available (Reservation Model)
-    // Count ONLY slots that are "SCHEDULED" (active reservations). 
-    // Completed/Canceled slots don't count against the limit (though Completed are deducted normally).
+    const durationMinutes = student.defaultDurationMinutes; // e.g. 60 or 90
+    const endTime = new Date(new Date(startTime).getTime() + durationMinutes * 60000);
+
+    // 2. Check Credits
+    // 3. Check Availability Window
+    // 4. Check Collision
+
     const activeReservations = await prisma.slot.count({
-        where: {
-            studentId: student.id,
-            status: "SCHEDULED"
-        }
+        where: { studentId: student.id, status: "SCHEDULED" }
     });
 
     if (activeReservations >= student.credits) {
         throw new Error(`Insufficient credits. You have ${student.credits} credits and ${activeReservations} active bookings.`);
     }
 
-    // 3. Check if slot is free
-    const slot = await prisma.slot.findUnique({
-        where: { id: slotId },
+    // Check Availability (Must be fully within an availability window)
+    const availabilityWindows = await prisma.availability.findMany({
+        where: {
+            startTime: { lte: startTime },
+            endTime: { gte: endTime }
+        }
     });
 
-    if (!slot) throw new Error("Slot not found");
-    if (slot.studentId) throw new Error("Slot already booked");
+    if (availabilityWindows.length === 0) {
+        throw new Error("Selected time is not within available hours.");
+    }
 
-    // 4. Book it
-    await prisma.slot.update({
-        where: { id: slotId },
+    // Check Collisions (Must not overlap with any existing slot)
+    const collision = await prisma.slot.findFirst({
+        where: {
+            status: { not: "CANCELED" },
+            OR: [
+                {
+                    startTime: { lt: endTime },
+                    endTime: { gt: startTime }
+                }
+            ]
+        }
+    });
+
+    if (collision) {
+        throw new Error("This slot is already booked.");
+    }
+
+    // 5. Create Booking
+    const newSlot = await prisma.slot.create({
         data: {
+            startTime,
+            endTime,
             studentId: student.id,
-            status: "SCHEDULED" // Explicitly set status
-        },
+            status: "SCHEDULED"
+        }
     });
 
-    // 5. Send Email Confirmation with ICS
+    // 6. Send Email
     try {
         const { sendBookingConfirmation } = await import("./calendar");
-        await sendBookingConfirmation(slotId);
+        await sendBookingConfirmation(newSlot.id);
     } catch (e) {
         console.error("Failed to send confirmation email:", e);
     }
 
     revalidatePath("/book");
     revalidatePath("/admin/availability");
+}
+
+
+// DEPRECATED: Old fixed slot booking
+export async function bookSlot(slotId: string, studentId: string) {
+    throw new Error("This booking method is deprecated.");
 }
 
 export async function completeSession(slotId: string) {

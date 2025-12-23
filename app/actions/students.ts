@@ -29,6 +29,7 @@ export async function createStudent(data: FormData) {
     const email = data.get("email") as string;
     const module = data.get("module") as string;
     const initialCredits = Number(data.get("initialCredits") || 0);
+    const defaultDurationMinutes = Number(data.get("defaultDurationMinutes") || 60);
 
     if (!name || !email) {
         throw new Error("Name and Email are required");
@@ -41,6 +42,7 @@ export async function createStudent(data: FormData) {
                 email,
                 module,
                 credits: initialCredits,
+                defaultDurationMinutes,
             },
         });
 
@@ -56,6 +58,15 @@ export async function createStudent(data: FormData) {
         }
     });
 
+    revalidatePath("/admin/students");
+}
+
+export async function updateStudentSettings(studentId: string, durationMinutes: number) {
+    await prisma.student.update({
+        where: { id: studentId },
+        data: { defaultDurationMinutes: durationMinutes }
+    });
+    revalidatePath(`/admin/students/${studentId}`);
     revalidatePath("/admin/students");
 }
 

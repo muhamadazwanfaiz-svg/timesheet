@@ -17,6 +17,8 @@ import { SessionNotesEditor } from "../components/session-notes-editor";
 import { DeleteSessionButton } from "../components/delete-session-button";
 import { SessionRow } from "../components/session-row";
 
+import { EditStudentSettingsDialog } from "../components/edit-student-settings-dialog";
+
 export default async function StudentDossierPage({
     params,
 }: {
@@ -29,28 +31,32 @@ export default async function StudentDossierPage({
         notFound();
     }
 
-
-
     return (
         <div className="space-y-8">
             {/* Header Section */}
             <div className="bg-gradient-to-r from-indigo-50/80 to-white dark:from-indigo-950/20 dark:to-slate-950 p-6 rounded-2xl border border-indigo-100/50 dark:border-indigo-900/50">
-                <div className="flex items-center gap-4">
-                    <Link
-                        href="/admin/students"
-                        className="p-2 bg-white dark:bg-slate-900 hover:bg-indigo-50 dark:hover:bg-indigo-900/50 text-slate-400 hover:text-indigo-600 rounded-lg transition-colors border border-slate-200 dark:border-slate-800 shadow-sm"
-                    >
-                        <ArrowLeft size={20} />
-                    </Link>
-                    <div>
-                        <h1 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">
-                            {student.name}
-                        </h1>
-                        <div className="flex items-center gap-2 text-slate-500 text-sm mt-1">
-                            <Mail size={14} className="text-indigo-400" />
-                            {student.email}
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                        <Link
+                            href="/admin/students"
+                            className="p-2 bg-white dark:bg-slate-900 hover:bg-indigo-50 dark:hover:bg-indigo-900/50 text-slate-400 hover:text-indigo-600 rounded-lg transition-colors border border-slate-200 dark:border-slate-800 shadow-sm"
+                        >
+                            <ArrowLeft size={20} />
+                        </Link>
+                        <div>
+                            <h1 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">
+                                {student.name}
+                            </h1>
+                            <div className="flex items-center gap-2 text-slate-500 text-sm mt-1">
+                                <Mail size={14} className="text-indigo-400" />
+                                {student.email}
+                            </div>
                         </div>
                     </div>
+                    <EditStudentSettingsDialog
+                        studentId={student.id}
+                        currentDuration={(student as any).defaultDurationMinutes || 60}
+                    />
                 </div>
 
                 {/* Quick Stats - Embedded in Header for better flow */}

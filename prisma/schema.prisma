@@ -19,6 +19,7 @@ model Student {
   bio       String?
   module    String?
   credits   Int      @default(0)
+  defaultDurationMinutes Int @default(60)
   
   // Onboarding & Security
   seoLevel     String?  // Beginner, Intermediate, Pro
@@ -62,4 +63,10 @@ model SystemSettings {
   showCommunity Boolean @default(false)
   showCourses   Boolean @default(false)
   showSessions  Boolean @default(true)
+}
+
+model Availability {
+  id        String   @id @default(cuid())
+  startTime DateTime
+  endTime   DateTime
 }

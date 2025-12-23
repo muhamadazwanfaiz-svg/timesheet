@@ -1,4 +1,4 @@
-import { getSlots } from "@/app/actions/availability";
+import { getAvailability, getBookings } from "@/app/actions/availability";
 import { AvailabilityManager } from "./components/availability-manager";
 
 
@@ -10,7 +10,8 @@ export default async function AvailabilityPage({
     const { date: dateStr } = await searchParams;
     const date = dateStr ? new Date(dateStr) : new Date();
 
-    const slots = await getSlots(date);
+    const availability = await getAvailability(date);
+    const bookings = await getBookings(date);
 
     return (
         <div className="space-y-6">
@@ -26,7 +27,7 @@ export default async function AvailabilityPage({
                 {/* Recurring dialog replaced by inline checkbox */}
             </div>
 
-            <AvailabilityManager date={date} slots={slots} />
+            <AvailabilityManager date={date} availability={availability} bookings={bookings} />
         </div>
     );
 }
