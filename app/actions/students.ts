@@ -209,7 +209,7 @@ export async function deleteSession(slotId: string) {
 }
 
 export async function scheduleSession(studentId: string, date: Date, durationMinutes: number = 60) {
-    await prisma.slot.create({
+    const newSlot = await prisma.slot.create({
         data: {
             studentId,
             startTime: date,
@@ -218,6 +218,14 @@ export async function scheduleSession(studentId: string, date: Date, durationMin
             classNotes: "",
         }
     });
+
+    // Trigger Email
+    try {
+        const { sendBookingConfirmation } = await import("./email");
+        await sendBookingConfirmation(newSlot.id);
+    } catch (e) {
+        console.error("Failed to send confirmation email:", e);
+    }
 
     revalidatePath("/admin/students");
 }

@@ -27,6 +27,10 @@ interface CalculatedSlot {
 
 export function BookingSheet({ isOpen, onClose, selectedDate, studentId, studentCredits }: BookingSheetProps) {
     const router = useRouter();
+    const [slots, setSlots] = React.useState<CalculatedSlot[]>([]);
+    const [loadingSlots, setLoadingSlots] = React.useState(false);
+    const [selectedSlot, setSelectedSlot] = React.useState<CalculatedSlot | null>(null);
+    const [booking, setBooking] = React.useState(false);
     const [successSlot, setSuccessSlot] = React.useState<CalculatedSlot | null>(null);
 
     // Helpers

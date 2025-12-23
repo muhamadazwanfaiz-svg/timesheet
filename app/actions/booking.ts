@@ -70,7 +70,10 @@ export async function bookSession(startTime: Date, studentId: string) {
 
     // 6. Send Email
     try {
-        const { sendBookingConfirmation } = await import("./calendar");
+        const { sendBookingConfirmation } = await import("./email");
+        // Fire and forget (don't await to keep UI fast? Or await to ensure sent?)
+        // Let's await to be safe, or run in background. 
+        // Next.js server actions can block. Let's await but catch errors so we don't rollback DB.
         await sendBookingConfirmation(newSlot.id);
     } catch (e) {
         console.error("Failed to send confirmation email:", e);
