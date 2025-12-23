@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { NoteViewer } from "../components/note-viewer";
 import { DashboardBookingWidget } from "../components/dashboard-booking-widget";
+import { FormattedDate } from "@/components/ui/formatted-date";
 
 async function getStudentData() {
     const cookieStore = await cookies();
@@ -139,6 +140,7 @@ export default async function StudentDashboardPage() {
                     </Card>
 
                     {/* Upcoming Session OR Class Notes */}
+                    {/* Upcoming Session OR Class Notes */}
                     {upcomingSlot ? (
                         <Card className="border-l-4 border-l-emerald-500 shadow-sm">
                             <CardHeader>
@@ -149,10 +151,10 @@ export default async function StudentDashboardPage() {
                             </CardHeader>
                             <CardContent>
                                 <div className="text-2xl font-bold text-slate-900">
-                                    {new Date(upcomingSlot.startTime).toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' })}
+                                    <FormattedDate date={upcomingSlot.startTime} mode="full" />
                                 </div>
                                 <div className="text-lg text-slate-600">
-                                    {new Date(upcomingSlot.startTime).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}
+                                    <FormattedDate date={upcomingSlot.startTime} mode="time" />
                                 </div>
                                 <div className="mt-4">
                                     <Button className="w-full bg-emerald-600 hover:bg-emerald-700">Join Meeting</Button>
@@ -177,7 +179,7 @@ export default async function StudentDashboardPage() {
                                     <BookOpen className="h-5 w-5" />
                                     Recent Class Notes
                                 </CardTitle>
-                                <CardDescription>Key takeaways from {new Date(lastCompletedSlot.startTime).toLocaleDateString()}</CardDescription>
+                                <CardDescription>Key takeaways from <FormattedDate date={lastCompletedSlot.startTime} mode="date" /></CardDescription>
                             </CardHeader>
                             <CardContent>
                                 <div className="prose prose-sm prose-amber text-slate-700 whitespace-pre-wrap">
@@ -202,10 +204,10 @@ export default async function StudentDashboardPage() {
                                             <div className={`w-2 h-12 rounded-full ${slot.status === 'COMPLETED' ? 'bg-indigo-500' : 'bg-slate-300'}`}></div>
                                             <div>
                                                 <div className="font-medium text-slate-900">
-                                                    {new Date(slot.startTime).toLocaleDateString()}
+                                                    <FormattedDate date={slot.startTime} mode="date" />
                                                 </div>
                                                 <div className="text-sm text-slate-500">
-                                                    {new Date(slot.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                    <FormattedDate date={slot.startTime} mode="time" />
                                                 </div>
                                             </div>
                                         </div>

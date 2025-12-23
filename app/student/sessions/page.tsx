@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { Header } from "@/components/header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { FormattedDate } from "@/components/ui/formatted-date";
 import { NoteViewer } from "../components/note-viewer";
 import { CalendarDays, ArrowLeft } from "lucide-react";
 import Link from "next/link";
@@ -67,12 +68,12 @@ export default async function StudentSessionsPage() {
                                                 {slot.status}
                                             </Badge>
                                             <span className="text-sm text-slate-500 font-medium">
-                                                {new Date(slot.startTime).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                                                <FormattedDate date={slot.startTime} mode="full" />
                                             </span>
                                         </div>
                                         <div className="text-2xl font-bold text-slate-900 dark:text-white mb-1">
-                                            {new Date(slot.startTime).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}
-                                            <span className="text-slate-400 font-normal text-lg"> - {new Date(slot.endTime).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}</span>
+                                            <FormattedDate date={slot.startTime} mode="time" />
+                                            <span className="text-slate-400 font-normal text-lg"> - <FormattedDate date={slot.endTime} mode="time" /></span>
                                         </div>
 
                                         {slot.classNotes && (
