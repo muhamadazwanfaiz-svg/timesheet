@@ -36,11 +36,15 @@ export function AddCreditDialog({ studentId, studentName }: AddCreditDialogProps
     async function handleSave() {
         setLoading(true);
         try {
-            await addCredits(studentId, parseInt(amount));
+            const result = await addCredits(studentId, parseInt(amount));
+            if (!result.success) {
+                toast.error(result.error);
+                return;
+            }
             setOpen(false);
             toast.success(`Added ${amount} credits to ${studentName}`);
         } catch (error) {
-            toast.error("Failed to add credits");
+            toast.error("An unexpected error occurred");
         } finally {
             setLoading(false);
         }

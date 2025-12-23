@@ -117,12 +117,12 @@ export async function addCredits(studentId: string, amount: number) {
 
             console.log(`Updated credits for ${student.email}: ${student.credits}`);
         });
-    } catch (e) {
+        revalidatePath("/admin/students");
+        return { success: true };
+    } catch (e: any) {
         console.error("Failed to add credits:", e);
-        throw e;
+        return { success: false, error: e.message || "Failed to add credits" };
     }
-
-    revalidatePath("/admin/students");
 }
 
 export async function backfillSessions(studentId: string, dateStrings: string[]) {

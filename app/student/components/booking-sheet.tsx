@@ -73,7 +73,11 @@ export function BookingSheet({ isOpen, onClose, selectedDate, studentId, student
 
         setBooking(true);
         try {
-            await bookSession(selectedSlot.startTime, studentId);
+            const result = await bookSession(selectedSlot.startTime, studentId);
+            if (!result.success) {
+                throw new Error(result.error);
+            }
+
             toast.success("Session booked successfully!", {
                 icon: <CheckCircle2 className="h-4 w-4 text-emerald-500" />,
             });

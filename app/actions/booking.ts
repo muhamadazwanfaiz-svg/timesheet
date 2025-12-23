@@ -7,80 +7,87 @@ import { getAvailability } from "./availability";
 
 // NEW: Dynamic Booking Action
 export async function bookSession(startTime: Date, studentId: string) {
-    // 1. Find student & get duration
-    const student = await prisma.student.findUnique({
-        where: { id: studentId },
-    });
-
-    if (!student) throw new Error("Student not found.");
-
-    const durationMinutes = student.defaultDurationMinutes; // e.g. 60 or 90
-    const endTime = new Date(new Date(startTime).getTime() + durationMinutes * 60000);
-
-    // 2. Check Credits
-    // 3. Check Availability Window
-    // 4. Check Collision
-
-    const activeReservations = await prisma.slot.count({
-        where: { studentId: student.id, status: "SCHEDULED" }
-    });
-
-    if (activeReservations >= student.credits) {
-        throw new Error(`Insufficient credits. You have ${student.credits} credits and ${activeReservations} active bookings.`);
-    }
-
-    // Check Availability (Must be fully within an availability window)
-    const availabilityWindows = await prisma.availability.findMany({
-        where: {
-            startTime: { lte: startTime },
-            endTime: { gte: endTime }
-        }
-    });
-
-    if (availabilityWindows.length === 0) {
-        throw new Error("Selected time is not within available hours.");
-    }
-
-    // Check Collisions (Must not overlap with any existing slot)
-    const collision = await prisma.slot.findFirst({
-        where: {
-            status: { not: "CANCELED" },
-            OR: [
-                {
-                    startTime: { lt: endTime },
-                    endTime: { gt: startTime }
-                }
-            ]
-        }
-    });
-
-    if (collision) {
-        throw new Error("This slot is already booked.");
-    }
-
-    // 5. Create Booking
-    const newSlot = await prisma.slot.create({
-        data: {
-            startTime,
-            endTime,
-            studentId: student.id,
-            status: "SCHEDULED"
-        }
-    });
-
-    // 6. Send Email
     try {
-        const { sendBookingConfirmation } = await import("./email");
-        // Fire and forget (don't await to keep UI fast? Or await to ensure sent?)
-        // Let's await to be safe, or run in background. 
-        // Next.js server actions can block. Let's await but catch errors so we don't rollback DB.
-        await sendBookingConfirmation(newSlot.id);
-    } catch (e) {
-        console.error("Failed to send confirmation email:", e);
-    }
+        // 1. Find student & get duration
+        const student = await prisma.student.findUnique({
+            where: { id: studentId },
+        });
 
-    revalidatePath("/book");
-    revalidatePath("/admin/availability");
+        if (!student) throw new Error("Student not found.");
+
+        const durationMinutes = student.defaultDurationMinutes; // e.g. 60 or 90
+        const endTime = new Date(new Date(startTime).getTime() + durationMinutes * 60000);
+
+        // 2. Check Credits
+        // 3. Check Availability Window
+        // 4. Check Collision
+
+        const activeReservations = await prisma.slot.count({
+            where: { studentId: student.id, status: "SCHEDULED" }
+        });
+
+        if (activeReservations >= student.credits) {
+            throw new Error(`Insufficient credits. You have ${student.credits} credits and ${activeReservations} active bookings.`);
+        }
+
+        // Check Availability (Must be fully within an availability window)
+        const availabilityWindows = await prisma.availability.findMany({
+            where: {
+                startTime: { lte: startTime },
+                endTime: { gte: endTime }
+            }
+        });
+
+        if (availabilityWindows.length === 0) {
+            throw new Error("Selected time is not within available hours.");
+        }
+
+        // Check Collisions (Must not overlap with any existing slot)
+        const collision = await prisma.slot.findFirst({
+            where: {
+                status: { not: "CANCELED" },
+                OR: [
+                    {
+                        startTime: { lt: endTime },
+                        endTime: { gt: startTime }
+                    }
+                ]
+            }
+        });
+
+        if (collision) {
+            throw new Error("This slot is already booked.");
+        }
+
+        // 5. Create Booking
+        const newSlot = await prisma.slot.create({
+            data: {
+                startTime,
+                endTime,
+                studentId: student.id,
+                status: "SCHEDULED"
+            }
+        });
+
+        // 6. Send Email
+        try {
+            const { sendBookingConfirmation } = await import("./email");
+            // Fire and forget (don't await to keep UI fast? Or await to ensure sent?)
+            // Let's await to be safe, or run in background. 
+            // Next.js server actions can block. Let's await but catch errors so we don't rollback DB.
+            await sendBookingConfirmation(newSlot.id);
+        } catch (e) {
+            console.error("Failed to send confirmation email:", e);
+        }
+
+        revalidatePath("/book");
+        revalidatePath("/admin/availability");
+        return { success: true };
+
+    } catch (error: any) {
+        console.error("Booking Error:", error);
+        return { success: false, error: error.message || "An unexpected error occurred." };
+    }
 }
 
 
