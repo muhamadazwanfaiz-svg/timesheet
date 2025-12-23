@@ -1,7 +1,7 @@
 "use client";
 
 import { completeSession } from "@/app/actions/booking";
-import { updateSlotNotes } from "@/app/actions/calendar";
+import { updateClassNotes } from "@/app/actions/notes";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
@@ -32,7 +32,7 @@ export function SlotActions({ slotId, status }: { slotId: string; status: string
     async function handleSaveNotes() {
         setSaving(true);
         try {
-            await updateSlotNotes(slotId, notes);
+            await updateClassNotes(slotId, notes);
             toast.success("Notes saved");
             setOpen(false);
         } catch (e) {
