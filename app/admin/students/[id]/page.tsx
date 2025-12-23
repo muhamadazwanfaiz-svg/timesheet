@@ -15,6 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { SessionNotesEditor } from "../components/session-notes-editor";
 import { DeleteSessionButton } from "../components/delete-session-button";
+import { SessionRow } from "../components/session-row";
 
 export default async function StudentDossierPage({
     params,
@@ -112,30 +113,7 @@ export default async function StudentDossierPage({
                                     </TableRow>
                                 ) : (
                                     student.slots.map((s) => (
-                                        <TableRow key={s.id} className="group hover:bg-slate-50/50 transition-colors">
-                                            <TableCell className="font-medium text-slate-700 dark:text-slate-200">
-                                                <div className="flex flex-col">
-                                                    <span>{format(s.startTime, "MMM d, yyyy")}</span>
-                                                    <span className="text-xs text-slate-400 font-normal">{format(s.startTime, "h:mm a")}</span>
-                                                </div>
-                                            </TableCell>
-                                            <TableCell>
-                                                <Badge variant="outline" className={
-                                                    s.status === "COMPLETED" ? "bg-emerald-50 text-emerald-700 border-emerald-200" :
-                                                        s.status === "SCHEDULED" ? "bg-blue-50 text-blue-700 border-blue-200" : "bg-slate-50 text-slate-600"
-                                                }>
-                                                    {s.status}
-                                                </Badge>
-                                            </TableCell>
-                                            <TableCell className="text-slate-600 relative p-0 h-full">
-                                                <div className="absolute inset-0 p-2">
-                                                    <SessionNotesEditor slotId={s.id} initialNotes={s.classNotes} />
-                                                </div>
-                                            </TableCell>
-                                            <TableCell className="text-right w-[50px]">
-                                                <DeleteSessionButton slotId={s.id} />
-                                            </TableCell>
-                                        </TableRow>
+                                        <SessionRow key={s.id} slot={s} />
                                     ))
                                 )}
                             </TableBody>

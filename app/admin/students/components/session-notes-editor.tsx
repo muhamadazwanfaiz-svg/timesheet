@@ -59,12 +59,13 @@ export function SessionNotesEditor({ slotId, initialNotes }: SessionNotesEditorP
 
     if (isEditing) {
         return (
-            <div className="space-y-2 min-w-[300px]">
+            <div className="space-y-2 w-full min-w-[250px]">
                 <Textarea
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
                     placeholder="Add session details, homework, or links..."
-                    className="min-h-[80px]"
+                    className="min-h-[80px] w-full resize-none"
+                    autoFocus
                 />
                 <div className="flex justify-end gap-2">
                     <Button
@@ -90,7 +91,7 @@ export function SessionNotesEditor({ slotId, initialNotes }: SessionNotesEditorP
 
     return (
         <div
-            className="group relative md:min-w-[300px] cursor-pointer rounded p-2 hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all"
+            className="group relative w-full h-full min-h-[40px] cursor-pointer rounded p-2 hover:bg-slate-100/80 border border-transparent hover:border-slate-200 transition-all"
             onClick={() => setIsEditing(true)}
         >
             <div className="text-sm text-slate-600 whitespace-pre-wrap">
