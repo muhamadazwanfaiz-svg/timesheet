@@ -9,57 +9,80 @@ import {
     Section,
     Text,
     Tailwind,
+    Link,
+    Hr
 } from "@react-email/components";
 import * as React from "react";
 
 interface BookingConfirmationEmailProps {
     studentName: string;
-    date: string;
-    time: string;
-    meetLink?: string;
+    date: string; // e.g. "Wednesday, Dec 31"
+    time: string; // e.g. "1:00 PM"
+    zoomLink: string;
+    googleCalendarUrl: string;
 }
 
 export const BookingConfirmationEmail = ({
     studentName,
     date,
     time,
-    meetLink,
+    zoomLink,
+    googleCalendarUrl,
 }: BookingConfirmationEmailProps) => {
     return (
         <Html>
             <Head />
-            <Preview>Your session is confirmed!</Preview>
+            <Preview>Session Secured: {date} @ {time}</Preview>
             <Tailwind>
-                <Body className="bg-white my-auto mx-auto font-sans">
-                    <Container className="border border-solid border-[#eaeaea] rounded my-[40px] mx-auto p-[20px] w-[465px]">
-                        <Heading className="text-black text-[24px] font-normal text-center p-0 my-[30px] mx-0">
-                            Booking Confirmed
+                <Body className="bg-slate-950 my-auto mx-auto font-sans text-white">
+                    <Container className="border border-solid border-indigo-900 bg-slate-900 rounded-lg my-[40px] mx-auto p-[20px] w-[465px] shadow-lg">
+
+                        {/* Header / Ticket Top */}
+                        <Heading className="text-white text-[24px] font-bold text-center p-0 my-[20px] mx-0 uppercase tracking-widest text-indigo-400">
+                            Session Secured 🚀
                         </Heading>
-                        <Text className="text-black text-[14px] leading-[24px]">
-                            Hi {studentName},
+
+                        <Text className="text-slate-300 text-[14px] leading-[24px] text-center">
+                            Hi {studentName}, your slot is locked in.
                         </Text>
-                        <Text className="text-black text-[14px] leading-[24px]">
-                            Your tutoring session has been successfully booked.
-                        </Text>
-                        <Section className="bg-gray-50 p-4 rounded-lg my-4">
-                            <Text className="m-0 text-gray-500 text-xs uppercase font-bold">When</Text>
-                            <Text className="m-0 text-black text-lg font-medium">{date}</Text>
-                            <Text className="m-0 text-black text-base">{time}</Text>
+
+                        {/* Ticket Details */}
+                        <Section className="my-[20px] bg-slate-950 border border-dashed border-slate-700 rounded-md p-6 text-center">
+                            <Text className="text-slate-400 text-[12px] uppercase tracking-wide mb-1">
+                                Date
+                            </Text>
+                            <Text className="text-white text-[18px] font-bold mb-4">
+                                {date}
+                            </Text>
+
+                            <Text className="text-slate-400 text-[12px] uppercase tracking-wide mb-1">
+                                Time
+                            </Text>
+                            <Text className="text-white text-[24px] font-bold text-indigo-300">
+                                {time}
+                            </Text>
                         </Section>
 
-                        {meetLink && (
-                            <Section className="text-center mt-[32px] mb-[32px]">
-                                <Button
-                                    className="bg-[#4f46e5] rounded text-white text-[12px] font-semibold no-underline text-center px-5 py-3"
-                                    href={meetLink}
-                                >
-                                    Join Meeting
-                                </Button>
-                            </Section>
-                        )}
+                        {/* Primary Call to Action */}
+                        <Section className="text-center mt-[10px] mb-[20px]">
+                            <Button
+                                className="bg-indigo-600 rounded-full text-white text-[14px] font-bold no-underline text-center px-8 py-4 shadow-[0_0_20px_rgba(79,70,229,0.5)] hover:bg-indigo-500 transition-all"
+                                href={googleCalendarUrl}
+                            >
+                                Add to Google Calendar
+                            </Button>
+                        </Section>
 
-                        <Text className="text-black text-[14px] leading-[24px]">
-                            A calendar invitation has been attached to this email. Please accept it to add it to your calendar.
+                        {/* Secondary Link */}
+                        <Text className="text-center text-slate-500 text-[12px]">
+                            Join Link: <Link href={zoomLink} className="text-indigo-400 underline">{zoomLink}</Link>
+                        </Text>
+
+                        <Hr className="border-slate-800 my-[20px]" />
+
+                        {/* Footer Quote */}
+                        <Text className="text-slate-600 text-[12px] italic text-center leading-[20px]">
+                            "Success is the sum of small efforts repeated day in and day out."
                         </Text>
                     </Container>
                 </Body>
@@ -67,3 +90,5 @@ export const BookingConfirmationEmail = ({
         </Html>
     );
 };
+
+export default BookingConfirmationEmail;
