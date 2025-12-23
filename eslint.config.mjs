@@ -12,6 +12,11 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    "debug-*.js",
+    "prisma/seed.js",
+    "list_slots.js",
+    "check_students.js",
+    "cleanup_backfills.js",
   ]),
 ]);
 
