@@ -14,6 +14,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { useState } from "react";
 import { toast } from "sonner";
 import { History, Loader2 } from "lucide-react";
+import { backfillSessions } from "@/app/actions/students";
 import { format } from "date-fns";
 
 export function BackfillDialog({ studentId, studentName }: { studentId: string, studentName: string }) {
