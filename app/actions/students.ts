@@ -108,18 +108,19 @@ export async function addCredits(studentId: string, amount: number) {
     revalidatePath("/admin/students");
 }
 
-export async function backfillSessions(studentId: string, dates: Date[]) {
-    if (dates.length === 0) return;
+export async function backfillSessions(studentId: string, dateStrings: string[]) {
+    if (dateStrings.length === 0) return;
 
     await prisma.$transaction(async (tx) => {
         // 1. Create completed slots for each date
-        for (const date of dates) {
-            // Set default time to 12:00 PM for record keeping
-            const startTime = new Date(date);
-            startTime.setHours(12, 0, 0, 0);
+        for (const dateStr of dateStrings) {
+            // dateStr is "YYYY-MM-DD". new Date(dateStr) creates UTC midnight.
+            const startTime = new Date(dateStr);
+            // Force it to 12:00 PM UTC to be safe in middle of day
+            startTime.setUTCHours(12, 0, 0, 0);
 
             const endTime = new Date(startTime);
-            endTime.setHours(13, 0, 0, 0);
+            endTime.setHours(startTime.getHours() + 1); // 1 hour duration
 
             await tx.slot.create({
                 data: {
@@ -133,7 +134,7 @@ export async function backfillSessions(studentId: string, dates: Date[]) {
         }
 
         // 2. Deduct credits
-        const amount = dates.length;
+        const amount = dateStrings.length;
         await tx.student.update({
             where: { id: studentId },
             data: { credits: { decrement: amount } }

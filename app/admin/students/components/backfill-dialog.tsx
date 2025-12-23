@@ -14,7 +14,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { useState } from "react";
 import { toast } from "sonner";
 import { History, Loader2 } from "lucide-react";
-import { backfillSessions } from "@/app/actions/students";
+import { format } from "date-fns";
 
 export function BackfillDialog({ studentId, studentName }: { studentId: string, studentName: string }) {
     const [open, setOpen] = useState(false);
@@ -26,7 +26,9 @@ export function BackfillDialog({ studentId, studentName }: { studentId: string, 
 
         setLoading(true);
         try {
-            await backfillSessions(studentId, dates);
+            // Convert to YYYY-MM-DD strings to avoid timezone shifts
+            const dateStrings = dates.map(d => format(d, "yyyy-MM-dd"));
+            await backfillSessions(studentId, dateStrings);
             toast.success(`Successfully logged ${dates.length} past sessions.`);
             setOpen(false);
             setDates([]);
