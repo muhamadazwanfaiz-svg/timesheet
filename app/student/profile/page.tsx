@@ -12,7 +12,7 @@ import { StudentLogoutButton } from "@/components/student-logout-button";
 import {
     User, BookOpen, Settings, LogOut,
     Trophy, Gamepad2, CalendarDays, ExternalLink,
-    Zap, Target, GraduationCap
+    Zap, Target, GraduationCap, Home
 } from "lucide-react";
 import { NoteViewer } from "../components/note-viewer";
 
@@ -85,37 +85,10 @@ export default async function StudentDashboardPage() {
                     <nav className="space-y-2">
                         <Button variant="ghost" className="w-full justify-start text-indigo-600 bg-indigo-50 font-semibold" asChild>
                             <Link href="/student/profile">
-                                <Gamepad2 className="mr-3 h-5 w-5" />
-                                Command Center
+                                <Home className="mr-3 h-5 w-5" />
+                                Home
                             </Link>
                         </Button>
-
-                        {settings.showSessions && (
-                            <Button variant="ghost" className="w-full justify-start text-slate-600 dark:text-slate-400" asChild>
-                                <Link href="/student/sessions">
-                                    <CalendarDays className="mr-3 h-5 w-5" />
-                                    Sessions
-                                </Link>
-                            </Button>
-                        )}
-
-                        {settings.showCourses && (
-                            <Button variant="ghost" className="w-full justify-start text-slate-600 dark:text-slate-400" asChild>
-                                <Link href="#">
-                                    <BookOpen className="mr-3 h-5 w-5" />
-                                    Courses
-                                </Link>
-                            </Button>
-                        )}
-
-                        {settings.showCommunity && (
-                            <Button variant="ghost" className="w-full justify-start text-slate-600 dark:text-slate-400" asChild>
-                                <Link href="#">
-                                    <User className="mr-3 h-5 w-5" />
-                                    Community
-                                </Link>
-                            </Button>
-                        )}
 
                         <Button variant="ghost" className="w-full justify-start text-slate-600 dark:text-slate-400" asChild>
                             <Link href="/student/settings">
