@@ -103,15 +103,29 @@ export function BookingSheet({ isOpen, onClose, selectedDate, studentId, student
                             {slots.map((slot, i) => (
                                 <button
                                     key={i}
-                                    onClick={() => setSelectedSlot(slot)}
+                                    disabled={!slot.available}
+                                    onClick={() => slot.available && setSelectedSlot(slot)}
                                     className={cn(
-                                        "relative flex flex-col items-center justify-center p-3 rounded-xl border transition-all duration-200 outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2",
-                                        selectedSlot === slot
-                                            ? "border-indigo-600 bg-indigo-50 text-indigo-700 font-semibold shadow-sm"
-                                            : "border-slate-200 hover:border-indigo-300 hover:bg-slate-50 text-slate-700"
+                                        "relative flex flex-row items-center justify-center p-3 rounded-xl border transition-all duration-200 outline-none",
+                                        !slot.available
+                                            ? "bg-slate-100 border-slate-100 text-slate-400 cursor-not-allowed opacity-80" // Booked Style
+                                            : selectedSlot === slot
+                                                ? "border-indigo-600 bg-indigo-50 text-indigo-700 font-semibold shadow-sm focus:ring-2 focus:ring-indigo-500" // Selected Style
+                                                : "border-slate-200 hover:border-indigo-300 hover:bg-slate-50 text-slate-700 focus:ring-2 focus:ring-indigo-500" // Available Style
                                     )}
                                 >
                                     <span className="text-sm">{format(slot.startTime, "h:mm a")}</span>
+                                    {!slot.available && (
+                                        <Loader2 className="ml-2 w-3 h-3 text-slate-400 opacity-0" /> // Spacer
+                                    )}
+                                    {!slot.available && (
+                                        <div className="absolute right-3">
+                                            {/* Lock Icon */}
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-3 h-3 text-slate-400">
+                                                <path fillRule="evenodd" d="M12 1.5a5.25 5.25 0 00-5.25 5.25v3a3 3 0 00-3 3v6.75a3 3 0 003 3h10.5a3 3 0 003-3v-6.75a3 3 0 00-3-3v-3c0-2.9-2.35-5.25-5.25-5.25zm3.75 8.25v-3a3.75 3.75 0 10-7.5 0v3h7.5z" clipRule="evenodd" />
+                                            </svg>
+                                        </div>
+                                    )}
                                 </button>
                             ))}
                         </div>

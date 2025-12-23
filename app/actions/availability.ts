@@ -78,10 +78,10 @@ export async function getCalculatedSlots(date: Date, studentId?: string) {
     // 4. Calculate
     const validStartTimes = getViableStartTimes(availability, bookings, durationMinutes);
 
-    return validStartTimes.map(time => ({
-        startTime: time,
-        endTime: new Date(time.getTime() + durationMinutes * 60000),
-        available: true
+    return validStartTimes.map(slot => ({
+        startTime: slot.startTime,
+        endTime: new Date(slot.startTime.getTime() + durationMinutes * 60000),
+        available: slot.available
     }));
 }
 

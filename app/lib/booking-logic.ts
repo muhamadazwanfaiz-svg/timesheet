@@ -6,18 +6,23 @@ export interface TimeRange {
     endTime: Date;
 }
 
+export interface ViableSlot {
+    startTime: Date;
+    available: boolean;
+}
+
 export function getViableStartTimes(
     availability: TimeRange[],
     bookings: TimeRange[],
     durationMinutes: number
-): Date[] {
+): ViableSlot[] {
     // 1. Sort availability by start time
     const sortedAvailability = [...availability].sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
 
     // 2. Sort bookings
     const sortedBookings = [...bookings].sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
 
-    const viableSlots: Date[] = [];
+    const viableSlots: ViableSlot[] = [];
 
     // 3. Iterate through each availability window
     for (const window of sortedAvailability) {
@@ -34,16 +39,17 @@ export function getViableStartTimes(
                 return areIntervalsOverlapping(
                     { start: slotStart, end: slotEnd },
                     { start: booking.startTime, end: booking.endTime },
-                    { inclusive: false } // inclusive: false means adjacent is okay (e.g. 8:00-9:00 and 9:00-10:00 is fine)
+                    { inclusive: false }
                 );
             });
 
-            if (!isBlocked) {
-                viableSlots.push(slotStart);
-            }
+            // FOMO Logic: Return ALL slots, but mark blocked ones as unavailable
+            viableSlots.push({
+                startTime: slotStart,
+                available: !isBlocked
+            });
 
             // Move pointer by 30 minutes (step)
-            // hardcoded step for now, could be configurable
             currentPointer = addMinutes(currentPointer, 30);
         }
     }
