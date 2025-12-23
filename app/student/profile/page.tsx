@@ -15,6 +15,7 @@ import {
     Zap, Target, GraduationCap, Home
 } from "lucide-react";
 import { NoteViewer } from "../components/note-viewer";
+import { DashboardBookingWidget } from "../components/dashboard-booking-widget";
 
 async function getStudentData() {
     const cookieStore = await cookies();
@@ -227,58 +228,42 @@ export default async function StudentDashboardPage() {
                 {/* 3. RIGHT COLUMN: Utility (Span 3) */}
                 <aside className="lg:col-span-3 space-y-6">
 
-                    {/* Quick Book - SWAPPED ORDER */}
-                    <div className="sticky top-24 space-y-6">
+                    {/* Integrated Booking Widget */}
+                    <DashboardBookingWidget
+                        studentId={student.id}
+                        studentCredits={student.credits}
+                    />
 
-                        {/* 1. Calendar Widget (Moved to TOP) */}
-                        <Card className="border-0 shadow-sm bg-white/50 backdrop-blur-sm">
-                            <CardContent className="p-0 flex justify-center pt-4 pb-2">
-                                <Calendar
-                                    mode="single"
-                                    selected={new Date()}
-                                    className="rounded-md border-0"
-                                />
-                            </CardContent>
-                        </Card>
-
-                        {/* 2. Button (Moved Below) */}
-                        <Button asChild className="w-full h-14 text-lg bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 shadow-lg shadow-indigo-200 dark:shadow-none transition-all hover:scale-[1.02]">
-                            <Link href="/book">
-                                Book New Session
-                            </Link>
-                        </Button>
-
-                        {/* Badges Grid - IMPLEMENTED */}
-                        <Card>
-                            <CardHeader className="pb-3">
-                                <CardTitle className="text-sm uppercase tracking-wider text-slate-500 font-semibold">Achievements</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="grid grid-cols-3 gap-2">
-                                    {[
-                                        { count: 1, icon: <Target size={18} />, label: "First Class" },
-                                        { count: 5, icon: <Zap size={18} />, label: "5 Classes" },
-                                        { count: 10, icon: <Trophy size={18} />, label: "10 Classes" },
-                                        { count: 20, icon: <BookOpen size={18} />, label: "Scholar" },
-                                        { count: 50, icon: <GraduationCap size={18} />, label: "Expert" },
-                                        { count: 100, icon: <ExternalLink size={18} />, label: "Legend" },
-                                    ].map((ach, i) => {
-                                        const isUnlocked = completedSlots.length >= ach.count;
-                                        return (
-                                            <div
-                                                key={i}
-                                                className={`aspect-square rounded-lg flex flex-col items-center justify-center text-xs text-center p-1 transition-all ${isUnlocked ? 'bg-indigo-50 text-indigo-600 border border-indigo-200 shadow-sm' : 'bg-slate-50 text-slate-300 grayscale'}`}
-                                                title={isUnlocked ? `Unlocked: ${ach.label}` : `Locked: Reach ${ach.count} classes`}
-                                            >
-                                                <div className="mb-1">{ach.icon}</div>
-                                                <span className="leading-none scale-90">{ach.label}</span>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </div>
+                    {/* Badges Grid - IMPLEMENTED */}
+                    <Card>
+                        <CardHeader className="pb-3">
+                            <CardTitle className="text-sm uppercase tracking-wider text-slate-500 font-semibold">Achievements</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="grid grid-cols-3 gap-2">
+                                {[
+                                    { count: 1, icon: <Target size={18} />, label: "First Class" },
+                                    { count: 5, icon: <Zap size={18} />, label: "5 Classes" },
+                                    { count: 10, icon: <Trophy size={18} />, label: "10 Classes" },
+                                    { count: 20, icon: <BookOpen size={18} />, label: "Scholar" },
+                                    { count: 50, icon: <GraduationCap size={18} />, label: "Expert" },
+                                    { count: 100, icon: <ExternalLink size={18} />, label: "Legend" },
+                                ].map((ach, i) => {
+                                    const isUnlocked = completedSlots.length >= ach.count;
+                                    return (
+                                        <div
+                                            key={i}
+                                            className={`aspect-square rounded-lg flex flex-col items-center justify-center text-xs text-center p-1 transition-all ${isUnlocked ? 'bg-indigo-50 text-indigo-600 border border-indigo-200 shadow-sm' : 'bg-slate-50 text-slate-300 grayscale'}`}
+                                            title={isUnlocked ? `Unlocked: ${ach.label}` : `Locked: Reach ${ach.count} classes`}
+                                        >
+                                            <div className="mb-1">{ach.icon}</div>
+                                            <span className="leading-none scale-90">{ach.label}</span>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </CardContent>
+                    </Card>
 
                 </aside>
 
