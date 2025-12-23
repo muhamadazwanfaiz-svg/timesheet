@@ -43,7 +43,9 @@ export function BookingSheet({ isOpen, onClose, selectedDate, studentId, student
     async function fetchSlots(date: Date) {
         setLoadingSlots(true);
         try {
-            const data = await getCalculatedSlots(date, studentId);
+            // Pass formatted string YYYY-MM-DD to avoid timezone shifts
+            const dateStr = format(date, "yyyy-MM-dd");
+            const data = await getCalculatedSlots(dateStr, studentId);
             setSlots(data);
         } catch (error) {
             console.error("Failed to fetch slots", error);

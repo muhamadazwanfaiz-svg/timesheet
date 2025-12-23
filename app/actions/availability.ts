@@ -45,12 +45,21 @@ export async function getBookings(date: Date) {
     });
 }
 
-export async function getCalculatedSlots(date: Date, studentId?: string) {
-    // 1. Get raw availability for the day
-    const start = new Date(date);
-    start.setHours(0, 0, 0, 0);
-    const end = new Date(date);
-    end.setHours(23, 59, 59, 999);
+export async function getCalculatedSlots(dateStr: string | Date, studentId?: string) {
+    // Ensure we work with the string format to avoid timezone shifts
+    // If a Date object is passed, convert to YYYY-MM-DD assuming it represents the correct local day requested
+    const targetDateStr = typeof dateStr === 'string'
+        ? dateStr
+        : dateStr.toISOString().split('T')[0];
+
+    // Create start/end range for this specific date in UTC
+    // new Date("YYYY-MM-DD") creates UTC midnight
+    const start = new Date(targetDateStr);
+    // Explicitly ensure valid date
+    if (isNaN(start.getTime())) throw new Error("Invalid date provided");
+
+    const end = new Date(start);
+    end.setUTCHours(23, 59, 59, 999);
 
     const availability = await prisma.availability.findMany({
         where: {
