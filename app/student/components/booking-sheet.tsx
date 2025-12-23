@@ -119,16 +119,17 @@ export function BookingSheet({ isOpen, onClose, selectedDate, studentId, student
                             </div>
 
                             <Button
-                                className="w-full h-14 text-lg bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-100 rounded-xl"
+                                className="w-full h-14 text-lg bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-100 rounded-xl relative overflow-hidden group animate-pulse-slow"
                                 asChild
                             >
                                 <a href={generateCalendarUrl(successSlot)} target="_blank" rel="noopener noreferrer">
-                                    <span className="mr-2">📅</span> Add to Google Calendar
+                                    <span className="mr-2 group-hover:animate-bounce">📅</span>
+                                    <span className="font-semibold">Add to Google Calendar</span>
                                 </a>
                             </Button>
 
-                            <p className="text-center text-sm text-slate-500 px-4">
-                                We've also sent a confirmation email to you with the details.
+                            <p className="text-center text-sm text-slate-500 px-4 mt-4">
+                                Please add this event to your Google Calendar to receive the meeting link.
                             </p>
                         </div>
 
