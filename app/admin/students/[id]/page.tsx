@@ -29,10 +29,7 @@ export default async function StudentDossierPage({
         notFound();
     }
 
-    // Calculate total spent (just for fun stats)
-    const totalSpent = student.transactions
-        .filter((t) => t.amount < 0)
-        .reduce((acc, t) => acc + Math.abs(t.amount), 0);
+
 
     return (
         <div className="space-y-8">
@@ -76,7 +73,7 @@ export default async function StudentDossierPage({
                         <div>
                             <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Sessions</p>
                             <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
-                                {totalSpent}
+                                {student.slots.length}
                             </h3>
                         </div>
                     </div>
