@@ -193,4 +193,52 @@ export async function scheduleSession(studentId: string, date: Date, durationMin
     revalidatePath("/admin/students");
 }
 
+export async function completeSession(slotId: string) {
+    console.log(`Marking session ${slotId} as complete`);
+
+    // 1. Fetch slot to verify and get studentId
+    const slot = await prisma.slot.findUnique({
+        where: { id: slotId },
+        include: { student: true }
+    });
+
+    if (!slot) throw new Error("Slot not found");
+    if (!slot.studentId) throw new Error("Slot has no student assigned");
+
+    // Allow re-completing if needed, but usually we check status.
+    // if (slot.status !== "SCHEDULED") throw new Error("Session is not in SCHEDULED status");
+
+    try {
+        await prisma.$transaction(async (tx) => {
+            // 2. Update Slot Status
+            await tx.slot.update({
+                where: { id: slotId },
+                data: { status: "COMPLETED" },
+            });
+
+            // 3. Deduct Credit
+            await tx.student.update({
+                where: { id: slot.studentId! },
+                data: { credits: { decrement: 1 } },
+            });
+
+            // 4. Create Transaction
+            await tx.creditTransaction.create({
+                data: {
+                    studentId: slot.studentId!,
+                    amount: -1,
+                    type: "USAGE",
+                    description: `Session completed on ${slot.startTime.toISOString().split('T')[0]}`,
+                },
+            });
+        });
+    } catch (e) {
+        console.error("Failed to complete session:", e);
+        throw e;
+    }
+
+    revalidatePath("/admin/students");
+    revalidatePath(`/admin/students/${slot.studentId}`);
+}
+
 

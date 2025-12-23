@@ -5,6 +5,7 @@ import { TableCell, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { SessionNotesEditor } from "./session-notes-editor";
 import { DeleteSessionButton } from "./delete-session-button";
+import { CompleteSessionButton } from "./complete-session-button";
 import { Slot } from "@prisma/client";
 
 interface SessionRowProps {
@@ -26,12 +27,20 @@ export function SessionRow({ slot }: SessionRowProps) {
 
             {/* Status Column */}
             <TableCell className="align-top py-4">
-                <Badge variant="outline" className={
-                    slot.status === "COMPLETED" ? "bg-emerald-50 text-emerald-700 border-emerald-200" :
-                        slot.status === "SCHEDULED" ? "bg-blue-50 text-blue-700 border-blue-200" : "bg-slate-50 text-slate-600"
-                }>
-                    {slot.status}
-                </Badge>
+                {slot.status === "SCHEDULED" ? (
+                    <div className="flex items-center gap-2">
+                        <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                            SCHEDULED
+                        </Badge>
+                        <CompleteSessionButton slotId={slot.id} />
+                    </div>
+                ) : (
+                    <Badge variant="outline" className={
+                        slot.status === "COMPLETED" ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-slate-50 text-slate-600"
+                    }>
+                        {slot.status}
+                    </Badge>
+                )}
             </TableCell>
 
             {/* Notes Column - Handles expansion gracefully */}
