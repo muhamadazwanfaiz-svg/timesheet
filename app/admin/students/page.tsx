@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getStudents } from "@/app/actions/students";
 import { AddStudentDialog } from "./components/add-student-dialog";
 // import { StudentTable } from "./components/student-table";
