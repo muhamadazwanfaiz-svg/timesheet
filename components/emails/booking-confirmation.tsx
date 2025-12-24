@@ -18,15 +18,15 @@ interface BookingConfirmationEmailProps {
     studentName: string;
     date: string; // e.g. "Wednesday, Dec 31"
     time: string; // e.g. "1:00 PM"
-    zoomLink: string;
-    googleCalendarUrl: string;
+    meetLink: string;
+    googleCalendarUrl?: string; // Optional now
 }
 
 export const BookingConfirmationEmail = ({
     studentName,
     date,
     time,
-    zoomLink,
+    meetLink,
     googleCalendarUrl,
 }: BookingConfirmationEmailProps) => {
     return (
@@ -64,18 +64,20 @@ export const BookingConfirmationEmail = ({
                         </Section>
 
                         {/* Primary Call to Action */}
-                        <Section className="text-center mt-[10px] mb-[20px]">
-                            <Button
-                                className="bg-indigo-600 rounded-full text-white text-[14px] font-bold no-underline text-center px-8 py-4 shadow-[0_0_20px_rgba(79,70,229,0.5)] hover:bg-indigo-500 transition-all"
-                                href={googleCalendarUrl}
-                            >
-                                Add to Google Calendar
-                            </Button>
-                        </Section>
+                        {googleCalendarUrl && (
+                            <Section className="text-center mt-[10px] mb-[20px]">
+                                <Button
+                                    className="bg-indigo-600 rounded-full text-white text-[14px] font-bold no-underline text-center px-8 py-4 shadow-[0_0_20px_rgba(79,70,229,0.5)] hover:bg-indigo-500 transition-all"
+                                    href={googleCalendarUrl}
+                                >
+                                    Add to Google Calendar
+                                </Button>
+                            </Section>
+                        )}
 
                         {/* Secondary Link */}
                         <Text className="text-center text-slate-500 text-[12px]">
-                            Join Link: <Link href={zoomLink} className="text-indigo-400 underline">{zoomLink}</Link>
+                            Join Link: <Link href={meetLink} className="text-indigo-400 underline">{meetLink}</Link>
                         </Text>
 
                         <Hr className="border-slate-800 my-[20px]" />
