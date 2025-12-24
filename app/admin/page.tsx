@@ -48,13 +48,13 @@ export default async function AdminDashboard() {
             </div>
 
             {/* Metrics Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="flex overflow-x-auto pb-4 gap-4 md:grid md:grid-cols-3 md:overflow-visible md:pb-0 snap-x snap-mandatory">
                 {[
                     { label: "Active Students", value: studentCount, icon: Users, color: "bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400" },
                     { label: "Upcoming Sessions", value: upcomingSessionsCount, icon: Clock, color: "bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400" },
                     { label: "Est. Revenue (Pipeline)", value: `$${estimatedRevenue}`, icon: DollarSign, color: "bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400" },
                 ].map((stat, i) => (
-                    <div key={i} className="p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-4">
+                    <div key={i} className="min-w-[85vw] md:min-w-0 snap-center p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-4">
                         <div className={`p-4 rounded-xl ${stat.color}`}>
                             <stat.icon size={24} />
                         </div>

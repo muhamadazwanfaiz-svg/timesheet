@@ -54,10 +54,10 @@ export default async function StudentDashboardPage() {
         <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
             <Header />
 
-            <main className="container max-w-7xl mx-auto py-8 px-4 grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <main className="container max-w-7xl mx-auto py-8 px-4 flex flex-col lg:grid lg:grid-cols-12 gap-8">
 
-                {/* 1. LEFT COLUMN: Identity & Nav (Span 3) */}
-                <aside className="lg:col-span-3 space-y-6">
+                {/* 1. LEFT COLUMN: Identity & Nav (Span 3) - Mobile Order 2 */}
+                <aside className="lg:col-span-3 space-y-6 order-2 lg:order-none">
                     {/* Identity Card */}
                     <Card className="border-indigo-100 dark:border-indigo-900 shadow-sm overflow-hidden">
                         <div className="h-24 bg-gradient-to-r from-indigo-500 to-violet-600"></div>
@@ -83,8 +83,8 @@ export default async function StudentDashboardPage() {
                         </div>
                     </Card>
 
-                    {/* Navigation Menu */}
-                    <nav className="space-y-2">
+                    {/* Navigation Menu (Hidden on mobile since we have bottom nav) */}
+                    <nav className="space-y-2 hidden lg:block">
                         <Button variant="ghost" className="w-full justify-start text-indigo-600 bg-indigo-50 font-semibold" asChild>
                             <Link href="/student/profile">
                                 <Home className="mr-3 h-5 w-5" />
@@ -101,14 +101,14 @@ export default async function StudentDashboardPage() {
                     </nav>
 
                     {/* Logout */}
-                    <div className="pt-6">
+                    <div className="pt-6 hidden lg:block">
                         <StudentLogoutButton />
                     </div>
                 </aside>
 
 
-                {/* 2. CENTER COLUMN: Feed (Span 6) */}
-                <section className="lg:col-span-6 space-y-6">
+                {/* 2. CENTER COLUMN: Feed (Span 6) - Mobile Order 3 */}
+                <section className="lg:col-span-6 space-y-6 order-3 lg:order-none">
 
                     {/* Gamification Bar */}
                     <Card className="bg-slate-900 text-white border-0 shadow-lg relative overflow-hidden">
@@ -227,8 +227,8 @@ export default async function StudentDashboardPage() {
                 </section>
 
 
-                {/* 3. RIGHT COLUMN: Utility (Span 3) */}
-                <aside className="lg:col-span-3 space-y-6">
+                {/* 3. RIGHT COLUMN: Utility (Span 3) - Mobile Order 1 */}
+                <aside className="lg:col-span-3 space-y-6 order-1 lg:order-none">
 
                     {/* Integrated Booking Widget */}
                     <DashboardBookingWidget
@@ -238,7 +238,7 @@ export default async function StudentDashboardPage() {
                     />
 
                     {/* Badges Grid - IMPLEMENTED */}
-                    <Card>
+                    <Card className="hidden lg:block">
                         <CardHeader className="pb-3">
                             <CardTitle className="text-sm uppercase tracking-wider text-slate-500 font-semibold">Achievements</CardTitle>
                         </CardHeader>
