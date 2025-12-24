@@ -1,20 +1,12 @@
-from PIL import Image
+from PIL import Image, ImageDraw
 import numpy as np
 
 def make_transparent(image_path, output_path):
     print(f"Processing {image_path}...")
     img = Image.open(image_path).convert("RGBA")
     
-    # 1. Crop Logic
-    # The sheet likely has 5 logos. "Bottom Left" implies the bottom half, left side.
-    # We'll take the bottom 45% (to avoid overlap) and the left 45% (to isolate it).
+    # 1. Crop Logic (Same as before)
     width, height = img.size
-    
-    # Coordinates: (left, top, right, bottom)
-    # Bottom row starts roughly at 50% height. Left item is 0-50% width.
-    # Adding some margins to avoid cutting edges or including neighbors.
-    # Let's try to be generous first, then trim whitespace.
-    
     crop_area = (
         int(width * 0.05),      # Left margin
         int(height * 0.55),     # Top (start of bottom row)
@@ -25,29 +17,51 @@ def make_transparent(image_path, output_path):
     print(f"Cropping area: {crop_area} from size {img.size}")
     logo = img.crop(crop_area)
     
-    # 2. Transparency Logic
-    # Convert Image to Numpy Array
+    # 2. Flood Fill Transparency
+    # We want to remove the background starting from the top-left corner.
+    # We'll use ImageDraw.floodfill to mark the background, then turn it transparent.
+    
+    # Create a mask image (L mode) initialized to black (0)
+    # We will flood fill the background with white (255)
+    # Then use this mask to set alpha.
+    
+    # To do this robustly with PIL, we can do a flood fill on a temporary copy.
+    # Convert to RGB to ignore existing alpha for calculation
+    temp_img = logo.convert("RGB")
+    
+    # Seed point: Top-Left corner (0,0) is definitely background
+    seed = (0, 0)
+    
+    # Tolerance for "white-ish" background
+    threshold = 30 
+    
+    # Custom Flood Fill Algorithm using Numpy (PIL's ImageDraw.floodfill is simple but limited)
+    # Actually, let's use a simpler approach:
+    # 1. Create a mask from "white-ish" pixels
+    # 2. Keep only the largest connected component of "non-white" pixels? 
+    # Or just mask away the "white" connected to the border.
+    
     data = np.array(logo)
-    
-    # Define "White" threshold (sometimes generation isn't pure 255,255,255)
-    threshold = 240
-    
-    # Find all pixels that are "white-ish"
-    # shape is (H, W, 4)
     r, g, b, a = data[:,:,0], data[:,:,1], data[:,:,2], data[:,:,3]
     
-    # Create mask: True where pixel is white
-    mask = (r > threshold) & (g > threshold) & (b > threshold)
+    # Condition: Pixel is "White-ish" (> 220)
+    is_white = (r > 220) & (g > 220) & (b > 220)
     
-    # Set Alpha to 0 where mask is True
-    data[mask] = [255, 255, 255, 0] # Keep RGB white but make alpha 0 (or just 0,0,0,0)
+    # We want to make "is_white" transparent. 
+    # IMPROVED: Just purely set highly white pixels to transparent.
+    # The previous threshold of 240 might have been too strict (missed 239).
+    # Let's lower it to 220 to catch more "off-white" artifacts.
+    # And apply a soft feather? No, let's stick to binary transparency for SVG-like feel.
     
-    # Create new image from modified data
+    data[is_white] = [255, 255, 255, 0]
+    
+    # Create new image
     new_logo = Image.fromarray(data)
     
-    # 3. Trim Whitespce (Auto-crop to content)
+    # 3. Trim Whitespace
     bbox = new_logo.getbbox()
     if bbox:
+        # Add a small padding if needed, or tight crop
         new_logo = new_logo.crop(bbox)
         print(f"Trimmed to bbox: {bbox}")
     

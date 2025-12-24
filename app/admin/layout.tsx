@@ -16,9 +16,9 @@ export default function AdminLayout({
                         <Image
                             src="/logo.png"
                             alt="SEO Laoshi Logo"
-                            width={140}
-                            height={50}
-                            className="h-10 w-auto object-contain"
+                            width={180}
+                            height={80}
+                            className="h-20 w-auto object-contain"
                             priority
                         />
                     </div>
