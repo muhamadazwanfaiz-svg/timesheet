@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { LayoutDashboard, Users, Calendar, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { logout } from "@/app/actions/auth";
+import { logoutAdmin } from "@/app/actions/auth";
 
 export function AdminMobileNav() {
     const pathname = usePathname();
@@ -49,6 +49,14 @@ export function AdminMobileNav() {
                         <span>{link.label}</span>
                     </Link>
                 ))}
+
+                {/* Logout Action */}
+                <form action={logoutAdmin} className="w-full h-full">
+                    <button type="submit" className="flex flex-col items-center justify-center space-y-1 w-full h-full text-xs font-medium text-slate-500 hover:text-red-600 transition-colors">
+                        <LogOut className="h-6 w-6" />
+                        <span>Logout</span>
+                    </button>
+                </form>
             </div>
         </div>
     );

@@ -153,3 +153,9 @@ export async function logoutStudent() {
     cookieStore.delete("student_id");
     redirect("/");
 }
+
+export async function logoutAdmin() {
+    const cookieStore = await cookies();
+    cookieStore.delete("admin_session");
+    redirect("/login");
+}
