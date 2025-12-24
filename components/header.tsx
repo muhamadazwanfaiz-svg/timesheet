@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Lock, User, LogIn } from "lucide-react";
+import { Lock, User } from "lucide-react";
 import { cookies } from "next/headers";
 import { StudentLogoutButton } from "./student-logout-button";
 import {
