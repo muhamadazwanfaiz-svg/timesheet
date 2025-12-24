@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { AdminSidebarNav } from "./components/admin-sidebar-nav";
 import { AdminMobileNav } from "@/components/admin-mobile-nav";
 
@@ -11,10 +12,16 @@ export default function AdminLayout({
             {/* Sidebar */}
             <aside className="w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 hidden md:flex md:flex-col">
                 <div className="p-6">
-                    <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">
-                        SEO Laoshi
-                    </h1>
-                    <p className="text-xs text-slate-500 mt-1">Tutor Dashboard</p>
+                    <div className="flex items-center gap-2">
+                        <Image
+                            src="/logo.png"
+                            alt="SEO Laoshi Logo"
+                            width={140}
+                            height={50}
+                            className="h-10 w-auto object-contain"
+                            priority
+                        />
+                    </div>
                 </div>
                 <div className="flex-1 overflow-y-auto">
                     <AdminSidebarNav />
