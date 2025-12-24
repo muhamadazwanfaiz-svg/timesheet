@@ -6,15 +6,18 @@ import { LoginWizard } from "./components/login-wizard";
 
 export default function LoginPage() {
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-4">
-            <div className="mb-8 text-center">
-                <Link href="/" className="inline-flex items-center gap-2 hover:opacity-80 transition-opacity">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-4 relative overflow-hidden">
+            {/* Background branding elements */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-indigo-200/20 dark:bg-indigo-900/10 rounded-full blur-3xl -z-10 pointer-events-none" />
+
+            <div className="mb-10 relative z-10">
+                <Link href="/" className="block hover:scale-105 transition-transform duration-300">
                     <Image
                         src="/logo.png"
-                        alt="SEO Laoshi Logo"
-                        width={200}
-                        height={70}
-                        className="h-16 w-auto object-contain"
+                        alt="SEO Laoshi"
+                        width={300}
+                        height={100}
+                        className="h-24 md:h-28 w-auto object-contain drop-shadow-sm"
                         priority
                     />
                 </Link>
