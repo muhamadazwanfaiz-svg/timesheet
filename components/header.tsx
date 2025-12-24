@@ -1,6 +1,9 @@
 import Image from "next/image";
-
-// ... existing imports
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Lock, User } from "lucide-react";
+import { cookies } from "next/headers";
+import { StudentLogoutButton } from "./student-logout-button";
 
 export async function Header() {
     const cookieStore = await cookies();
