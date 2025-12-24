@@ -17,6 +17,7 @@ import {
 import { NoteViewer } from "../components/note-viewer";
 import { DashboardBookingWidget } from "../components/dashboard-booking-widget";
 import { FormattedDate } from "@/components/ui/formatted-date";
+import { getFunAvatar } from "@/lib/avatar";
 
 async function getStudentData() {
     const cookieStore = await cookies();
@@ -74,8 +75,8 @@ export default async function StudentDashboardPage() {
                                     {student.avatarUrl ? (
                                         <img src={student.avatarUrl} alt={student.name} className="w-full h-full object-cover" />
                                     ) : (
-                                        <div className="w-full h-full flex items-center justify-center text-xl font-bold text-slate-400 bg-slate-100">
-                                            {student.name.charAt(0)}
+                                        <div className="w-full h-full flex items-center justify-center text-3xl select-none bg-slate-100">
+                                            {getFunAvatar(student.id)}
                                         </div>
                                     )}
                                     {/* Edit Overlay on Avatar */}
