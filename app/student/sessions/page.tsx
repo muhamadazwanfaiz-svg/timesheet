@@ -42,7 +42,7 @@ export default async function StudentSessionsPage() {
                                 <ArrowLeft className="h-5 w-5" />
                             </Link>
                         </Button>
-                        <h1 className="text-3xl font-bold text-slate-900 dark:text-white">my Sessions</h1>
+                        <h1 className="text-3xl font-bold text-slate-900 dark:text-white">My Sessions</h1>
                     </div>
                 </div>
 
