@@ -12,7 +12,7 @@ export default function AdminLayout({
             <aside className="w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 hidden md:flex md:flex-col">
                 <div className="p-6">
                     <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">
-                        Timesheet
+                        SEO Laoshi
                     </h1>
                     <p className="text-xs text-slate-500 mt-1">Tutor Dashboard</p>
                 </div>

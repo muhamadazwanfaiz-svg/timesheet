@@ -8,7 +8,7 @@ export default function LoginPage() {
         <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-4">
             <div className="mb-8 text-center">
                 <Link href="/" className="inline-flex items-center gap-2 font-bold text-3xl tracking-tight bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent hover:opacity-80 transition-opacity">
-                    Timesheet
+                    SEO Laoshi
                 </Link>
             </div>
             <Suspense fallback={<div>Loading...</div>}>
