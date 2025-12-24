@@ -9,9 +9,9 @@ def make_transparent(image_path, output_path):
     width, height = img.size
     crop_area = (
         int(width * 0.05),      # Left margin
-        int(height * 0.55),     # Top (start of bottom row)
-        int(width * 0.45),      # Right (end of first item on bottom row)
-        int(height * 0.95)      # Bottom margin
+        int(height * 0.62),     # Top (Start lower to avoid logo above)
+        int(width * 0.50),      # Right (Strict half-width to avoid neighbor)
+        int(height * 0.98)      # Bottom margin
     )
     
     print(f"Cropping area: {crop_area} from size {img.size}")
