@@ -43,6 +43,17 @@ export function StudentListItem({ student }: StudentListItemProps) {
     const upcomingSessions = student.slots;
     const creditColor = student.credits > 3 ? "text-emerald-600" : student.credits > 0 ? "text-amber-600" : "text-red-600";
 
+    // Deterministic emoji based on student ID to ensure it stays the same
+    const getFunAvatar = (id: string) => {
+        const emojis = ["🦊", "🐼", "🦄", "🦁", "🐧", "🐸", "🐙", "🍄", "🚀", "🎨", "🎸", "⚡️", "🥑", "🍩", "🤖", "👻", "🐱", "🐶", "🦋", "🦖"];
+        let hash = 0;
+        for (let i = 0; i < id.length; i++) {
+            hash = id.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        const index = Math.abs(hash) % emojis.length;
+        return emojis[index];
+    };
+
     return (
         <div className={`bg-white dark:bg-slate-900 rounded-xl border transition-all duration-300 overflow-hidden ${isExpanded ? 'border-indigo-200 ring-1 ring-indigo-50 shadow-md' : 'border-slate-100 dark:border-slate-800 shadow-sm'}`}>
 
@@ -57,7 +68,7 @@ export function StudentListItem({ student }: StudentListItemProps) {
                         {student.avatarUrl ? (
                             <img src={student.avatarUrl} alt={student.name} className="w-full h-full object-cover" />
                         ) : (
-                            <span className="text-slate-400 font-bold text-lg">{student.name.charAt(0)}</span>
+                            <span className="text-2xl select-none">{getFunAvatar(student.id)}</span>
                         )}
                         {/* Status Indicator Dot */}
                         {student.credits > 0 && (
