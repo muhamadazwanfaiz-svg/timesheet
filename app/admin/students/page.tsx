@@ -1,7 +1,7 @@
 import { getStudents } from "@/app/actions/students";
 import { AddStudentDialog } from "./components/add-student-dialog";
 // import { StudentTable } from "./components/student-table";
-import { StudentCard } from "./components/student-card";
+import { StudentListItem } from "./components/student-list-item";
 
 export default async function StudentsPage() {
     const students = await getStudents();
@@ -17,9 +17,9 @@ export default async function StudentsPage() {
 
             {/* <StudentTable students={students} /> -- Deprecated for Grid View */}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+            <div className="space-y-3">
                 {students.map((student) => (
-                    <StudentCard key={student.id} student={student} />
+                    <StudentListItem key={student.id} student={student} />
                 ))}
             </div>
         </div>
