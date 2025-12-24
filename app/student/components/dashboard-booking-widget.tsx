@@ -30,7 +30,7 @@ export function DashboardBookingWidget({ studentId, studentName, studentCredits 
     }
 
     return (
-        <div className="space-y-6 sticky top-24">
+        <div className="space-y-6 lg:sticky lg:top-24">
             {/* Interactive Calendar Title */}
             <div className="flex items-center justify-between px-1">
                 <h3 className="text-sm uppercase tracking-wider text-slate-500 font-semibold">Quick Book</h3>
