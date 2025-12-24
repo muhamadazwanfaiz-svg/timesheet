@@ -18,6 +18,7 @@ model Student {
   password  String   @default("password")
   bio       String?
   module    String?
+  avatarUrl String? // Link to profile image
   credits   Int      @default(0)
   defaultDurationMinutes Int @default(60)
   
