@@ -36,6 +36,8 @@ interface StudentListItemProps {
     student: Student;
 }
 
+import { getFunAvatar } from "@/lib/avatar";
+
 export function StudentListItem({ student }: StudentListItemProps) {
     const [isExpanded, setIsExpanded] = useState(false);
 
@@ -43,16 +45,7 @@ export function StudentListItem({ student }: StudentListItemProps) {
     const upcomingSessions = student.slots;
     const creditColor = student.credits > 3 ? "text-emerald-600" : student.credits > 0 ? "text-amber-600" : "text-red-600";
 
-    // Deterministic emoji based on student ID to ensure it stays the same
-    const getFunAvatar = (id: string) => {
-        const emojis = ["🦊", "🐼", "🦄", "🦁", "🐧", "🐸", "🐙", "🍄", "🚀", "🎨", "🎸", "⚡️", "🥑", "🍩", "🤖", "👻", "🐱", "🐶", "🦋", "🦖"];
-        let hash = 0;
-        for (let i = 0; i < id.length; i++) {
-            hash = id.charCodeAt(i) + ((hash << 5) - hash);
-        }
-        const index = Math.abs(hash) % emojis.length;
-        return emojis[index];
-    };
+    // Removed local getFunAvatar definition
 
     return (
         <div className={`bg-white dark:bg-slate-900 rounded-xl border transition-all duration-300 overflow-hidden ${isExpanded ? 'border-indigo-200 ring-1 ring-indigo-50 shadow-md' : 'border-slate-100 dark:border-slate-800 shadow-sm'}`}>
