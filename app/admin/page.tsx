@@ -40,7 +40,7 @@ export default async function AdminDashboard() {
                     <p className="text-slate-500 dark:text-slate-400">Welcome back, Tutor. Here&apos;s your daily overview.</p>
                 </div>
                 <div className="flex gap-2">
-                    <Link href="/admin/availability" className="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow hover:bg-indigo-700 transition">
+                    <Link href="/admin/availability" className="inline-flex items-center justify-center rounded-lg bg-mercurial px-4 py-2 text-sm font-bold text-white shadow-lg shadow-purple-200/50 hover:opacity-90 transition">
                         <Calendar className="mr-2 h-4 w-4" />
                         Manage Slots
                     </Link>
@@ -48,13 +48,13 @@ export default async function AdminDashboard() {
             </div>
 
             {/* Metrics Grid */}
-            <div className="flex overflow-x-auto pb-4 gap-4 md:grid md:grid-cols-3 md:overflow-visible md:pb-0 snap-x snap-mandatory">
+            <div className="flex overflow-x-auto pb-4 gap-4 md:grid md:grid-cols-3 md:overflow-visible md:pb-0 snap-x snap-mandatory -mx-4 px-4 md:mx-0 md:px-0">
                 {[
                     { label: "Active Students", value: studentCount, icon: Users, color: "bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400" },
                     { label: "Upcoming Sessions", value: upcomingSessionsCount, icon: Clock, color: "bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400" },
                     { label: "Est. Revenue (Pipeline)", value: `$${estimatedRevenue}`, icon: DollarSign, color: "bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400" },
                 ].map((stat, i) => (
-                    <div key={i} className="min-w-[85vw] md:min-w-0 snap-center p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-4">
+                    <div key={i} className="min-w-[280px] w-[85vw] md:w-auto md:min-w-0 snap-center p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-4">
                         <div className={`p-4 rounded-xl ${stat.color}`}>
                             <stat.icon size={24} />
                         </div>

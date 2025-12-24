@@ -51,6 +51,11 @@ const config = {
                 card: {
                     DEFAULT: 'hsl(var(--card))',
                     foreground: 'hsl(var(--card-foreground))'
+                },
+                brand: {
+                    purple: '#9333ea', // Purple 600
+                    cyan: '#06b6d4',   // Cyan 500
+                    light: '#e8f7ff',  // Very light cyan/white mix
                 }
             },
             borderRadius: {

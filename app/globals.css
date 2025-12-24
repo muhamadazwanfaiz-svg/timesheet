@@ -74,6 +74,18 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  .bg-mercurial {
+    @apply bg-gradient-to-r from-purple-600 to-cyan-500;
+  }
+
+  .text-mercurial {
+    @apply bg-gradient-to-r from-purple-600 to-cyan-500 bg-clip-text text-transparent;
+  }
+
+  .border-mercurial {
+    @apply border-transparent bg-gradient-to-r from-purple-600 to-cyan-500 bg-origin-border;
+  }
 }
 
 /* Scrollbar */

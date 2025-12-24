@@ -23,7 +23,7 @@ export default function AdminLayout({
 
             {/* Main Content */}
             <main className="flex-1 overflow-y-auto pb-20 md:pb-0">
-                <div className="p-8">
+                <div className="p-4 md:p-8">
                     {children}
                 </div>
             </main>
