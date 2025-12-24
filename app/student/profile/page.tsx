@@ -43,233 +43,162 @@ export default async function StudentDashboardPage() {
     // Computed Logic
     const upcomingSlot = student.slots.find(s => s.status === "SCHEDULED" && new Date(s.startTime) > new Date());
     const completedSlots = student.slots.filter(s => s.status === "COMPLETED");
-    const lastCompletedSlot = completedSlots[0]; // Most recent because of orderBy desc
+    const lastCompletedSlot = completedSlots[0];
 
-    // Gamification Logic (XP = Credits Spent? Or just Slots Completed * 100)
+    // Gamification Logic
     const xp = completedSlots.length * 100;
     const level = Math.floor(xp / 500) + 1;
     const progressToNext = (xp % 500) / 500 * 100;
 
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pb-24 lg:pb-8">
             <Header />
 
-            <main className="container max-w-7xl mx-auto py-8 px-4 flex flex-col lg:grid lg:grid-cols-12 gap-8">
+            <main className="container max-w-5xl mx-auto py-6 px-4 space-y-4">
 
-                {/* 1. LEFT COLUMN: Identity & Nav (Span 3) - Mobile Order 2 */}
-                <aside className="lg:col-span-3 space-y-6 order-2 lg:order-none">
-                    {/* Identity Card */}
-                    <Card className="border-indigo-100 dark:border-indigo-900 shadow-sm overflow-hidden">
-                        <div className="h-24 bg-gradient-to-r from-indigo-500 to-violet-600"></div>
-                        <div className="px-6 pb-6 relative">
-                            <div className="w-20 h-20 rounded-full bg-white p-1 absolute -top-10 shadow-md">
-                                <div className="w-full h-full rounded-full bg-slate-200 flex items-center justify-center text-slate-500 text-2xl font-bold">
-                                    {student.name.charAt(0)}
+                {/* 1. BENTO GRID HEADER (Mobile: 2 Columns, Tablet+: 3 Columns or consistent) */}
+                <div className="grid grid-cols-2 gap-3 lg:gap-6">
+
+                    {/* LEFT CARD: IDENTITY (Me) */}
+                    <Card className="bg-white dark:bg-slate-900 border-indigo-100 dark:border-indigo-900 shadow-sm relative overflow-hidden flex flex-col justify-between">
+                        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-violet-500 to-fuchsia-500"></div>
+                        <CardContent className="p-4 flex flex-col items-center text-center h-full justify-center">
+                            <div className="relative mb-2">
+                                {/* Profile Photo / Avatar */}
+                                <div className="w-16 h-16 rounded-full border-2 border-white shadow-md overflow-hidden bg-slate-100">
+                                    {student.avatarUrl ? (
+                                        <img src={student.avatarUrl} alt={student.name} className="w-full h-full object-cover" />
+                                    ) : (
+                                        <div className="w-full h-full flex items-center justify-center text-xl font-bold text-slate-400 bg-slate-100">
+                                            {student.name.charAt(0)}
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-0.5 shadow-sm">
+                                    <Badge className="bg-fuchsia-600 hover:bg-fuchsia-700 text-[10px] px-1.5 py-0 h-5">
+                                        Lv {level}
+                                    </Badge>
                                 </div>
                             </div>
-                            <div className="mt-12 space-y-1">
-                                <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">{student.name}</h2>
-                                <Badge variant="secondary" className="bg-indigo-100 text-indigo-700 hover:bg-indigo-200">
-                                    {student.seoLevel || "Beginner"} SEO
-                                </Badge>
-                            </div>
 
-                            <div className="mt-6 pt-6 border-t border-slate-100 dark:border-slate-800">
-                                <div className="text-sm text-slate-500 uppercase tracking-wider font-semibold">Credits</div>
-                                <div className="text-3xl font-bold text-slate-900 dark:text-slate-100 mt-1">
-                                    {student.credits}
-                                </div>
-                            </div>
-                        </div>
-                    </Card>
+                            <h2 className="font-bold text-slate-800 dark:text-slate-100 text-sm leading-tight line-clamp-1">
+                                {student.name.split(' ')[0]}
+                            </h2>
+                            <p className="text-xs text-slate-500 mb-2 truncate max-w-full">
+                                {student.seoLevel || "Beginner"}
+                            </p>
 
-                    {/* Navigation Menu (Hidden on mobile since we have bottom nav) */}
-                    <nav className="space-y-2 hidden lg:block">
-                        <Button variant="ghost" className="w-full justify-start text-indigo-600 bg-indigo-50 font-semibold" asChild>
-                            <Link href="/student/profile">
-                                <Home className="mr-3 h-5 w-5" />
-                                Home
-                            </Link>
-                        </Button>
-
-                        <Button variant="ghost" className="w-full justify-start text-slate-600 dark:text-slate-400" asChild>
-                            <Link href="/student/settings">
-                                <Settings className="mr-3 h-5 w-5" />
-                                Settings
-                            </Link>
-                        </Button>
-                    </nav>
-
-                    {/* Logout */}
-                    <div className="pt-6 hidden lg:block">
-                        <StudentLogoutButton />
-                    </div>
-                </aside>
-
-
-                {/* 2. CENTER COLUMN: Feed (Span 6) - Mobile Order 3 */}
-                <section className="lg:col-span-6 space-y-6 order-3 lg:order-none">
-
-                    {/* Gamification Bar */}
-                    <Card className="bg-slate-900 text-white border-0 shadow-lg relative overflow-hidden">
-                        <div className="absolute top-0 right-0 p-3 opacity-10">
-                            <Trophy size={100} />
-                        </div>
-                        <CardContent className="p-6">
-                            <div className="flex justify-between items-end mb-2">
-                                <div>
-                                    <div className="text-sm text-slate-400 font-medium uppercase tracking-wider">Current Level</div>
-                                    <div className="text-3xl font-bold text-white">Level {level}</div>
-                                </div>
-                                <div className="text-right">
-                                    <div className="text-sm text-slate-400">Next Reward</div>
-                                    <div className="text-indigo-300 font-medium">Advanced SEO Toolkit</div>
-                                </div>
-                            </div>
-                            {/* Custom Progress Bar */}
-                            <div className="w-full h-3 bg-slate-800 rounded-full overflow-hidden">
+                            {/* Mini Progress Bar */}
+                            <div className="w-full h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden mt-auto">
                                 <div
-                                    className="h-full bg-gradient-to-r from-indigo-500 to-fuchsia-500 transition-all duration-1000"
+                                    className="h-full bg-fuchsia-500 rounded-full"
                                     style={{ width: `${progressToNext}%` }}
                                 ></div>
-                            </div>
-                            <div className="mt-2 text-xs text-slate-500 text-right">
-                                {xp % 500} / 500 XP to Level {level + 1}
                             </div>
                         </CardContent>
                     </Card>
 
-                    {/* Upcoming Session OR Class Notes */}
-                    {/* Upcoming Session OR Class Notes */}
+                    {/* RIGHT CARD: NEXT CLASS (Urgency) */}
                     {upcomingSlot ? (
-                        <Card className="border-l-4 border-l-emerald-500 shadow-sm">
-                            <CardHeader>
-                                <CardTitle className="flex items-center gap-2 text-emerald-700">
-                                    <CalendarDays className="h-5 w-5" />
-                                    Next Session: Coming Up!
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="text-2xl font-bold text-slate-900">
-                                    <FormattedDate date={upcomingSlot.startTime} mode="full" />
+                        <Card className="bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-100 dark:border-emerald-900 shadow-sm flex flex-col justify-between relative overflow-hidden">
+                            <div className="absolute top-0 right-0 p-2 opacity-5">
+                                <CalendarDays size={60} className="text-emerald-600" />
+                            </div>
+                            <CardContent className="p-4 h-full flex flex-col justify-center">
+                                <div className="text-xs font-bold text-emerald-600 uppercase tracking-wider mb-1 flex items-center gap-1">
+                                    <span className="relative flex h-2 w-2">
+                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                                    </span>
+                                    Up Next
                                 </div>
-                                <div className="text-lg text-slate-600">
+                                <div className="font-bold text-slate-900 dark:text-white text-lg leading-tight mb-0.5">
                                     <FormattedDate date={upcomingSlot.startTime} mode="time" />
                                 </div>
-                                <div className="mt-4">
-                                    <Button className="w-full bg-emerald-600 hover:bg-emerald-700">Join Meeting</Button>
+                                <div className="text-xs text-slate-600 dark:text-slate-400 mb-3">
+                                    <FormattedDate date={upcomingSlot.startTime} mode="date" />
                                 </div>
+                                <Button size="sm" className="w-full bg-emerald-600 hover:bg-emerald-700 text-white h-7 text-xs shadow-sm mt-auto">
+                                    Join
+                                </Button>
                             </CardContent>
                         </Card>
                     ) : (
-                        <div className="bg-white p-6 rounded-xl border border-dashed border-slate-300 text-center space-y-3">
-                            <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mx-auto text-slate-400">
-                                <CalendarDays size={24} />
-                            </div>
-                            <h3 className="text-lg font-medium text-slate-900">No upcoming sessions</h3>
-                            <p className="text-slate-500 text-sm">You are all caught up! Book a slot to keep your streak going.</p>
-                        </div>
-                    )}
-
-                    {/* Recent Class Notes (Replaces Feedback) */}
-                    {lastCompletedSlot && lastCompletedSlot.classNotes && (
-                        <Card className="bg-amber-50/50 border-amber-100">
-                            <CardHeader>
-                                <CardTitle className="flex items-center gap-2 text-amber-800 text-lg">
-                                    <BookOpen className="h-5 w-5" />
-                                    Recent Class Notes
-                                </CardTitle>
-                                <CardDescription>Key takeaways from <FormattedDate date={lastCompletedSlot.startTime} mode="date" /></CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="prose prose-sm prose-amber text-slate-700 whitespace-pre-wrap">
-                                    <NoteViewer note={lastCompletedSlot.classNotes} />
+                        <Card className="bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 border-dashed shadow-none flex flex-col justify-center text-center">
+                            <CardContent className="p-4 flex flex-col items-center gap-2 h-full justify-center">
+                                <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400">
+                                    <CalendarDays size={16} />
+                                </div>
+                                <div>
+                                    <div className="font-semibold text-slate-700 dark:text-slate-300 text-sm">No Class</div>
+                                    <p className="text-[10px] text-slate-500 leading-tight mt-0.5">Plan your week ahead!</p>
                                 </div>
                             </CardContent>
                         </Card>
                     )}
+                </div>
 
-                    {/* Recent History */}
-                    <div>
-                        <div className="flex items-center justify-between mb-3 px-1">
-                            <h3 className="text-lg font-semibold text-slate-900/80">Session History</h3>
-                            <Link href="/student/sessions" className="text-sm text-indigo-600 hover:underline">View All</Link>
+                {/* 2. MIDDLE ROW: WALLET STRIP */}
+                <Card className="bg-indigo-600 text-white shadow-md border-0">
+                    <CardContent className="p-3 flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                                <Zap size={16} className="text-yellow-300 fill-yellow-300" />
+                            </div>
+                            <div>
+                                <div className="text-[10px] text-indigo-200 uppercase font-semibold tracking-wider">Balance</div>
+                                <div className="font-bold text-lg leading-none">{student.credits} Credits</div>
+                            </div>
                         </div>
-                        <div className="space-y-3">
-                            {student.slots.length === 0 && <p className="text-slate-500 italic px-1">No history yet.</p>}
-                            {student.slots.slice(0, 3).map(slot => (
-                                <div key={slot.id} className="bg-white p-4 rounded-lg border shadow-sm space-y-3">
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center gap-4">
-                                            <div className={`w-2 h-12 rounded-full ${slot.status === 'COMPLETED' ? 'bg-indigo-500' : 'bg-slate-300'}`}></div>
-                                            <div>
-                                                <div className="font-medium text-slate-900">
-                                                    <FormattedDate date={slot.startTime} mode="date" />
-                                                </div>
-                                                <div className="text-sm text-slate-500">
-                                                    <FormattedDate date={slot.startTime} mode="time" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <Badge variant={slot.status === 'COMPLETED' ? 'default' : 'outline'}>
-                                            {slot.status}
-                                        </Badge>
-                                    </div>
-                                    {slot.classNotes && (
-                                        <div className="pl-6 border-l-2 border-indigo-100 ml-3">
-                                            <NoteViewer note={slot.classNotes} />
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </section>
+                        <Button
+                            variant="secondary"
+                            size="sm"
+                            className="bg-white text-indigo-600 hover:bg-indigo-50 border-0 h-8 text-xs font-bold px-4 shadow-sm"
+                        >
+                            Top Up
+                        </Button>
+                    </CardContent>
+                </Card>
 
-
-                {/* 3. RIGHT COLUMN: Utility (Span 3) - Mobile Order 1 */}
-                <aside className="lg:col-span-3 space-y-6 order-1 lg:order-none">
-
-                    {/* Integrated Booking Widget */}
+                {/* 3. MAIN WIDGET: BOOKING / TABS (Takes remaining space) */}
+                <div className="space-y-4">
                     <DashboardBookingWidget
                         studentId={student.id}
                         studentName={student.name}
                         studentCredits={student.credits}
                     />
 
-                    {/* Badges Grid - IMPLEMENTED */}
-                    <Card className="hidden lg:block">
-                        <CardHeader className="pb-3">
-                            <CardTitle className="text-sm uppercase tracking-wider text-slate-500 font-semibold">Achievements</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="grid grid-cols-3 gap-2">
-                                {[
-                                    { count: 1, icon: <Target size={18} />, label: "First Class" },
-                                    { count: 5, icon: <Zap size={18} />, label: "5 Classes" },
-                                    { count: 10, icon: <Trophy size={18} />, label: "10 Classes" },
-                                    { count: 20, icon: <BookOpen size={18} />, label: "Scholar" },
-                                    { count: 50, icon: <GraduationCap size={18} />, label: "Expert" },
-                                    { count: 100, icon: <ExternalLink size={18} />, label: "Legend" },
-                                ].map((ach, i) => {
-                                    const isUnlocked = completedSlots.length >= ach.count;
-                                    return (
-                                        <div
-                                            key={i}
-                                            className={`aspect-square rounded-lg flex flex-col items-center justify-center text-xs text-center p-1 transition-all ${isUnlocked ? 'bg-indigo-50 text-indigo-600 border border-indigo-200 shadow-sm' : 'bg-slate-50 text-slate-300 grayscale'}`}
-                                            title={isUnlocked ? `Unlocked: ${ach.label}` : `Locked: Reach ${ach.count} classes`}
-                                        >
-                                            <div className="mb-1">{ach.icon}</div>
-                                            <span className="leading-none scale-90">{ach.label}</span>
+                    {/* History Section (Secondary) */}
+                    <div className="pt-4">
+                        <div className="flex items-center justify-between mb-3 px-1">
+                            <h3 className="font-semibold text-slate-900">Recent Sessions</h3>
+                            <Link href="/student/sessions" className="text-xs font-medium text-indigo-600 hover:text-indigo-700">View All</Link>
+                        </div>
+                        <div className="space-y-2">
+                            {student.slots.length === 0 && (
+                                <div className="text-center py-8 text-slate-400 text-sm bg-slate-50 rounded-lg border border-dashed border-slate-200">
+                                    No session history found.
+                                </div>
+                            )}
+                            {student.slots.slice(0, 3).map(slot => (
+                                <div key={slot.id} className="bg-white dark:bg-slate-900 p-3 rounded-lg border border-slate-100 dark:border-slate-800 shadow-sm flex items-center justify-between">
+                                    <div className="flex items-center gap-3">
+                                        <div className={`w-1.5 h-8 rounded-full ${slot.status === 'COMPLETED' ? 'bg-indigo-500' : 'bg-slate-200'}`}></div>
+                                        <div>
+                                            <div className="font-medium text-sm text-slate-900 dark:text-slate-100">
+                                                <FormattedDate date={slot.startTime} mode="full" />
+                                            </div>
+                                            <div className="text-xs text-slate-500">
+                                                <FormattedDate date={slot.startTime} mode="time" /> • {slot.status}
+                                            </div>
                                         </div>
-                                    );
-                                })}
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                </aside>
-
+                                    </div>
+                                    {slot.classNotes && <BookOpen size={14} className="text-indigo-400" />}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
             </main>
         </div>
     );
