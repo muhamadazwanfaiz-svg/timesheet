@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 import { LoginWizard } from "./components/login-wizard";
 
@@ -7,8 +8,15 @@ export default function LoginPage() {
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-4">
             <div className="mb-8 text-center">
-                <Link href="/" className="inline-flex items-center gap-2 font-bold text-3xl tracking-tight bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent hover:opacity-80 transition-opacity">
-                    SEO Laoshi
+                <Link href="/" className="inline-flex items-center gap-2 hover:opacity-80 transition-opacity">
+                    <Image
+                        src="/logo.png"
+                        alt="SEO Laoshi Logo"
+                        width={200}
+                        height={70}
+                        className="h-16 w-auto object-contain"
+                        priority
+                    />
                 </Link>
             </div>
             <Suspense fallback={<div>Loading...</div>}>
