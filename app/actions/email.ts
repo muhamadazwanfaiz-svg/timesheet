@@ -38,7 +38,7 @@ export async function sendBookingConfirmation(slotId: string) {
         studentName: student.name,
         date: format(startTime, "EEEE, MMM d"),
         time: format(startTime, "h:mm a"),
-        zoomLink: "https://zoom.us/j/123456789", // Placeholder
+        meetLink: "https://meet.google.com/generic-link", // Updated placeholder
         googleCalendarUrl
     };
 
