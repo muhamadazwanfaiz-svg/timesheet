@@ -29,6 +29,7 @@ export function AvailabilityManager({ date, availability, bookings }: Availabili
     const [loading, setLoading] = React.useState(false);
 
     const [optimisticDate, setOptimisticDate] = React.useState(date);
+    const [isRecurring, setIsRecurring] = React.useState(false);
 
     // Sync optimistic/local date with server date
     React.useEffect(() => {
@@ -60,8 +61,19 @@ export function AvailabilityManager({ date, availability, bookings }: Availabili
                 return;
             }
 
-            await createAvailability(start, end);
-            toast.success("Availability added");
+            const result = await createAvailability(start, end, isRecurring);
+
+            if (result && typeof result === 'object' && 'count' in result) {
+                if (result.count > 0) {
+                    toast.success(result.message);
+                } else {
+                    toast.warning("No slots created (overlaps detected).");
+                }
+            } else {
+                // Fallback for any legacy behavior/void 
+                toast.success("Availability added");
+            }
+
         } catch (e: any) {
             toast.error(e.message || "Failed to add availability");
         } finally {
@@ -127,6 +139,23 @@ export function AvailabilityManager({ date, availability, bookings }: Availabili
                                     onChange={(e) => setEndTime(e.target.value)}
                                 />
                             </div>
+
+                            <div className="flex items-center space-x-2 pb-2.5">
+                                <input
+                                    type="checkbox"
+                                    id="recurring"
+                                    className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                                    checked={isRecurring}
+                                    onChange={(e) => setIsRecurring(e.target.checked)}
+                                />
+                                <label
+                                    htmlFor="recurring"
+                                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                >
+                                    Repeat (3w)
+                                </label>
+                            </div>
+
                             <Button onClick={handleAddAvailability} disabled={loading}>
                                 {loading ? "Adding..." : "Add Availability"}
                             </Button>
@@ -189,7 +218,7 @@ export function AvailabilityManager({ date, availability, bookings }: Availabili
                     )}
                 </div>
             </div>
-        </div>
+        </div >
     );
 }
 

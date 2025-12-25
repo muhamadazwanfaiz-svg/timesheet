@@ -94,19 +94,57 @@ export async function getCalculatedSlots(dateStr: string | Date, studentId?: str
     }));
 }
 
-export async function createAvailability(startTime: Date, endTime: Date) {
+export async function createAvailability(startTime: Date, endTime: Date, isRecurring: boolean = false) {
     await requireAdmin();
     if (startTime >= endTime) throw new Error("End time must be after start time");
 
-    await prisma.availability.create({
-        data: {
-            startTime,
-            endTime
+    const slotsToCreate = [];
+    // 0 weeks (current), 1 week, 2 weeks from now
+    const iterations = isRecurring ? 3 : 1;
+    let createdCount = 0;
+
+    for (let i = 0; i < iterations; i++) {
+        const start = new Date(startTime);
+        start.setDate(start.getDate() + (i * 7));
+
+        const end = new Date(endTime);
+        end.setDate(end.getDate() + (i * 7));
+
+        // Check for overlap
+        // We do a simple check: is there any availability that overlaps?
+        // Actually, the schema might allow overlapping availability? 
+        // Usually we want to avoid exact duplicates or overlaps.
+        // Let's check for exact overlaps or containment.
+
+        const existing = await prisma.availability.findFirst({
+            where: {
+                startTime: { lt: end },
+                endTime: { gt: start }
+            }
+        });
+
+        if (!existing) {
+            slotsToCreate.push({ startTime: start, endTime: end });
         }
-    });
+    }
+
+    if (slotsToCreate.length > 0) {
+        await prisma.availability.createMany({
+            data: slotsToCreate
+        });
+        createdCount = slotsToCreate.length;
+    }
 
     revalidatePath("/admin/availability");
     revalidatePath("/book");
+
+    return {
+        count: createdCount,
+        total: iterations,
+        message: isRecurring
+            ? `Created ${createdCount} out of ${iterations} recurring slots`
+            : "Availability added"
+    };
 }
 
 export async function deleteAvailability(id: string) {
