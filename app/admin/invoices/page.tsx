@@ -57,8 +57,12 @@ export default async function InvoicesPage() {
                                         <tr key={invoice.id} className="bg-white dark:bg-slate-900 border-b dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50">
                                             <td className="px-6 py-4 font-medium">{invoice.number}</td>
                                             <td className="px-6 py-4">
-                                                <div className="font-medium text-slate-900 dark:text-slate-100">{invoice.student.name}</div>
-                                                <div className="text-xs text-slate-500">{invoice.student.email}</div>
+                                                <div className="font-medium text-slate-900 dark:text-slate-100">
+                                                    {invoice.student ? invoice.student.name : invoice.recipientName}
+                                                </div>
+                                                <div className="text-xs text-slate-500">
+                                                    {invoice.student ? invoice.student.email : invoice.recipientEmail}
+                                                </div>
                                             </td>
                                             <td className="px-6 py-4 text-slate-500">
                                                 {format(new Date(invoice.date), "MMM d, yyyy")}
