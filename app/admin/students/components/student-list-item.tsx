@@ -53,25 +53,25 @@ export function StudentListItem({ student }: StudentListItemProps) {
 
             {/* HERDER / TRIGGER AREA */}
             <div
-                className="p-3 flex items-center justify-between cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
+                className="p-2 md:p-3 flex items-center justify-between cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
                 onClick={() => setIsExpanded(!isExpanded)}
             >
-                <div className="flex items-center gap-3 md:gap-4 overflow-hidden">
+                <div className="flex items-center gap-2 md:gap-4 overflow-hidden">
                     {/* Large Avatar */}
-                    <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-slate-100 flex-shrink-0 flex items-center justify-center overflow-hidden border-2 border-slate-50 shadow-sm relative">
+                    <div className="w-10 h-10 md:w-14 md:h-14 rounded-full bg-slate-100 flex-shrink-0 flex items-center justify-center overflow-hidden border-2 border-slate-50 shadow-sm relative">
                         {student.avatarUrl ? (
                             <img src={student.avatarUrl} alt={student.name} className="w-full h-full object-cover" />
                         ) : (
-                            <span className="text-2xl select-none">{getFunAvatar(student.id)}</span>
+                            <span className="text-lg md:text-2xl select-none">{getFunAvatar(student.id)}</span>
                         )}
                         {/* Status Indicator Dot */}
                         {student.credits > 0 && (
-                            <div className="absolute top-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full"></div>
+                            <div className="absolute top-0 right-0 w-2.5 h-2.5 md:w-3 md:h-3 bg-emerald-500 border-2 border-white rounded-full"></div>
                         )}
                     </div>
 
                     <div className="min-w-0">
-                        <h3 className="font-bold text-slate-900 dark:text-slate-100 truncate text-base">
+                        <h3 className="font-bold text-slate-900 dark:text-slate-100 truncate text-sm md:text-base">
                             {student.name}
                         </h3>
                         <div className="flex items-center gap-2 mt-0.5">
