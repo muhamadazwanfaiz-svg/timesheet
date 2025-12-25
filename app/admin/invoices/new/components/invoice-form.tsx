@@ -33,17 +33,26 @@ export default function InvoiceForm({ students, nextInvoiceNumber }: InvoiceForm
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     // Form State
+    const [recipientType, setRecipientType] = useState<"student" | "custom">("student");
     const [studentId, setStudentId] = useState("");
+
+    // Custom Recipient State
+    const [customName, setCustomName] = useState("");
+    const [customEmail, setCustomEmail] = useState("");
+    const [customAddress, setCustomAddress] = useState("");
+
     const [date, setDate] = useState<Date | undefined>(new Date());
     const [dueDate, setDueDate] = useState<Date | undefined>(undefined);
     const [notes, setNotes] = useState("");
-    const [items, setItems] = useState<CreateInvoiceItem[]>([
-        { description: "Tutoring Session", quantity: 1, rate: 50, amount: 50 },
-    ]);
+
 
     // Sender Details State
     const [senderName, setSenderName] = useState("Timesheet");
     const [senderAddress, setSenderAddress] = useState("123 Tutor Street\nEducation City, ED 10101");
+
+    const [items, setItems] = useState<CreateInvoiceItem[]>([
+        { description: "Tutoring Session", quantity: 1, rate: 50, amount: 50 },
+    ]);
 
     // Computed
     const subtotal = items.reduce((sum, item) => sum + item.amount, 0);
@@ -77,8 +86,12 @@ export default function InvoiceForm({ students, nextInvoiceNumber }: InvoiceForm
     });
 
     const handleSave = async () => {
-        if (!studentId) {
+        if (recipientType === "student" && !studentId) {
             toast.error("Please select a student");
+            return;
+        }
+        if (recipientType === "custom" && !customName) {
+            toast.error("Please enter a recipient name");
             return;
         }
         if (!date) {
@@ -88,13 +101,18 @@ export default function InvoiceForm({ students, nextInvoiceNumber }: InvoiceForm
 
         setIsSubmitting(true);
         try {
-            const result = await createInvoice({
-                studentId,
+            const payload = {
                 date,
                 dueDate,
                 items,
                 notes,
-            });
+                studentId: recipientType === "student" ? studentId : undefined,
+                recipientName: recipientType === "custom" ? customName : undefined,
+                recipientEmail: recipientType === "custom" ? customEmail : undefined,
+                recipientAddress: recipientType === "custom" ? customAddress : undefined,
+            };
+
+            const result = await createInvoice(payload);
 
             if (result.success) {
                 toast.success("Invoice created successfully");
@@ -164,17 +182,58 @@ export default function InvoiceForm({ students, nextInvoiceNumber }: InvoiceForm
                     {/* Bill To & Details */}
                     <div className="grid grid-cols-2 gap-12 mb-12">
                         <div>
-                            <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-4">Bill To</h3>
-                            <div className="space-y-2">
-                                <StudentSelect
-                                    value={studentId}
-                                    onValueChange={setStudentId}
-                                    students={students}
-                                />
-                                {selectedStudent && (
-                                    <div className="text-sm mt-2 p-2 bg-slate-50 rounded border border-slate-100">
-                                        <p className="font-medium">{selectedStudent.name}</p>
-                                        <p className="text-slate-500">{selectedStudent.email}</p>
+                            <div className="flex items-center justify-between mb-4">
+                                <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Bill To</h3>
+                                <div className="flex bg-slate-100 rounded-lg p-1">
+                                    <button
+                                        className={cn(
+                                            "px-3 py-1 text-xs font-medium rounded-md transition-all",
+                                            recipientType === "student" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700"
+                                        )}
+                                        onClick={() => setRecipientType("student")}
+                                    >
+                                        Student
+                                    </button>
+                                    <button
+                                        className={cn(
+                                            "px-3 py-1 text-xs font-medium rounded-md transition-all",
+                                            recipientType === "custom" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700"
+                                        )}
+                                        onClick={() => setRecipientType("custom")}
+                                    >
+                                        Custom
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div className="space-y-4">
+                                {recipientType === "student" ? (
+                                    <StudentSelect
+                                        value={studentId}
+                                        onValueChange={setStudentId}
+                                        students={students}
+                                    />
+                                ) : (
+                                    <div className="space-y-3 p-4 bg-slate-50 rounded-lg border border-slate-100">
+                                        <Input
+                                            placeholder="Recipient Name"
+                                            value={customName}
+                                            onChange={(e) => setCustomName(e.target.value)}
+                                            className="bg-white"
+                                        />
+                                        <Input
+                                            placeholder="Email Address (Optional)"
+                                            value={customEmail}
+                                            onChange={(e) => setCustomEmail(e.target.value)}
+                                            className="bg-white"
+                                        />
+                                        <Textarea
+                                            placeholder="Billing Address (Optional)"
+                                            value={customAddress}
+                                            onChange={(e) => setCustomAddress(e.target.value)}
+                                            className="bg-white resize-none"
+                                            rows={2}
+                                        />
                                     </div>
                                 )}
                             </div>
@@ -187,7 +246,7 @@ export default function InvoiceForm({ students, nextInvoiceNumber }: InvoiceForm
                                         <Button
                                             variant={"outline"}
                                             className={cn(
-                                                "w-[180px] justify-start text-left font-normal",
+                                                "w-[240px] justify-start text-left font-normal",
                                                 !date && "text-muted-foreground"
                                             )}
                                         >
@@ -212,7 +271,7 @@ export default function InvoiceForm({ students, nextInvoiceNumber }: InvoiceForm
                                         <Button
                                             variant={"outline"}
                                             className={cn(
-                                                "w-[180px] justify-start text-left font-normal",
+                                                "w-[240px] justify-start text-left font-normal",
                                                 !dueDate && "text-muted-foreground"
                                             )}
                                         >

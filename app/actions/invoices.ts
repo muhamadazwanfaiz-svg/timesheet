@@ -23,7 +23,10 @@ export async function getNextInvoiceNumber() {
 }
 
 export async function createInvoice(data: {
-    studentId: string;
+    studentId?: string;
+    recipientName?: string;
+    recipientEmail?: string;
+    recipientAddress?: string;
     date: Date;
     dueDate?: Date;
     items: CreateInvoiceItem[];
@@ -33,10 +36,17 @@ export async function createInvoice(data: {
         const number = await getNextInvoiceNumber();
         const total = data.items.reduce((acc, item) => acc + item.amount, 0);
 
+        if (!data.studentId && !data.recipientName) {
+            return { success: false, error: "Must provide a student or recipient name" };
+        }
+
         const invoice = await prisma.invoice.create({
             data: {
                 number,
                 studentId: data.studentId,
+                recipientName: data.recipientName,
+                recipientEmail: data.recipientEmail,
+                recipientAddress: data.recipientAddress,
                 date: data.date,
                 dueDate: data.dueDate,
                 notes: data.notes,

@@ -88,12 +88,18 @@ model Availability {
 
 model Invoice {
   id          String        @id @default(cuid())
-  studentId   String
-  student     Student       @relation(fields: [studentId], references: [id])
+  studentId   String?
+  student     Student?      @relation(fields: [studentId], references: [id])
   number      String        @unique // e.g., INV-001
   date        DateTime      @default(now())
   dueDate     DateTime?
   status      String        @default("DRAFT") // DRAFT, PAID, SENT
+  
+  // Custom Recipient Details (if not a student)
+  recipientName    String?
+  recipientEmail   String?
+  recipientAddress String?
+
   items       InvoiceItem[]
   notes       String?
   total       Float         @default(0)
