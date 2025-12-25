@@ -6,6 +6,7 @@ import { useReactToPrint } from "react-to-print";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea"; // Ensure this component exists or use standard textarea
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
@@ -39,6 +40,10 @@ export default function InvoiceForm({ students, nextInvoiceNumber }: InvoiceForm
     const [items, setItems] = useState<CreateInvoiceItem[]>([
         { description: "Tutoring Session", quantity: 1, rate: 50, amount: 50 },
     ]);
+
+    // Sender Details State
+    const [senderName, setSenderName] = useState("Timesheet");
+    const [senderAddress, setSenderAddress] = useState("123 Tutor Street\nEducation City, ED 10101");
 
     // Computed
     const subtotal = items.reduce((sum, item) => sum + item.amount, 0);
@@ -142,10 +147,17 @@ export default function InvoiceForm({ students, nextInvoiceNumber }: InvoiceForm
                             <h1 className="text-4xl font-bold text-slate-900 mb-2">INVOICE</h1>
                             <p className="text-slate-500 font-medium">{nextInvoiceNumber}</p>
                         </div>
-                        <div className="text-right">
-                            {/* Your Logo Here if you want */}
-                            <div className="text-xl font-bold text-indigo-600">Timesheet</div>
-                            <p className="text-sm text-slate-500 mt-1">123 Tutor Street<br />Education City, ED 10101</p>
+                        <div className="text-right flex flex-col items-end">
+                            <Input
+                                className="text-xl font-bold text-indigo-600 text-right border-none p-0 h-auto focus-visible:ring-0 w-[300px]"
+                                value={senderName}
+                                onChange={(e) => setSenderName(e.target.value)}
+                            />
+                            <Textarea
+                                className="text-sm text-slate-500 mt-1 text-right border-none p-0 resize-none focus-visible:ring-0 min-h-[60px] w-[300px]"
+                                value={senderAddress}
+                                onChange={(e) => setSenderAddress(e.target.value)}
+                            />
                         </div>
                     </div>
 
