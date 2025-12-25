@@ -80,6 +80,49 @@ export async function adminBookSession(studentId: string, date: Date, durationMi
     revalidatePath("/admin");
     revalidatePath("/admin/students");
     revalidatePath("/student");
+    revalidatePath("/student");
     revalidatePath("/student/sessions");
+    return { success: true };
+}
+
+export async function updateSessionTime(slotId: string, newDate: Date, durationMinutes: number = 60) {
+    if (!slotId || !newDate) throw new Error("Missing required fields");
+
+    const startTime = new Date(newDate);
+    const endTime = new Date(startTime.getTime() + durationMinutes * 60 * 1000);
+
+    // 1. Check for Conflicts (exclude current slot)
+    const conflict = await prisma.slot.findFirst({
+        where: {
+            id: { not: slotId }, // Exclude self
+            OR: [
+                { startTime: { lte: startTime }, endTime: { gt: startTime } },
+                { startTime: { lt: endTime }, endTime: { gte: endTime } }
+            ],
+            status: { not: "CANCELED" }
+        }
+    });
+
+    if (conflict) {
+        throw new Error("This time slot overlaps with another existing session.");
+    }
+
+    // 2. Update Slot
+    await prisma.slot.update({
+        where: { id: slotId },
+        data: {
+            startTime,
+            endTime
+        }
+    });
+
+    // 3. Email Notification (Optional but good)
+    // We could send a "Rescheduled" email here.
+
+    revalidatePath("/admin");
+    revalidatePath("/admin/students");
+    revalidatePath("/student");
+    revalidatePath("/student/sessions"); // Ensure student sees new time immediately
+
     return { success: true };
 }

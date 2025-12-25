@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { AddCreditDialog } from "./add-credit-dialog";
 import { BackfillDialog } from "./backfill-dialog";
 import { ScheduleSessionDialog } from "./schedule-session-dialog";
+import { EditSessionDialog } from "@/app/admin/components/edit-session-dialog";
 import { format } from "date-fns";
 import Link from "next/link";
 
@@ -139,7 +140,7 @@ export function StudentListItem({ student }: StudentListItemProps) {
                                     upcomingSessions.map((session) => {
                                         const isLive = new Date(session.startTime) <= new Date() && new Date(session.endTime) > new Date();
                                         return (
-                                            <div key={session.id} className="flex items-center justify-between p-2.5 bg-white rounded-lg border border-slate-100 shadow-sm text-sm">
+                                            <div key={session.id} className="flex items-center justify-between p-2.5 bg-white rounded-lg border border-slate-100 shadow-sm text-sm group">
                                                 <div className="flex items-center gap-3">
                                                     <div className={`p-1.5 rounded-full ${isLive ? 'bg-emerald-100 text-emerald-600 animate-pulse' : 'bg-slate-100 text-slate-400'}`}>
                                                         <Clock size={14} />
@@ -153,7 +154,14 @@ export function StudentListItem({ student }: StudentListItemProps) {
                                                         </div>
                                                     </div>
                                                 </div>
-                                                {isLive && <Badge className="bg-emerald-500 h-5 px-1.5 text-[9px]">LIVE</Badge>}
+                                                <div className="flex items-center gap-2">
+                                                    {isLive && <Badge className="bg-emerald-500 h-5 px-1.5 text-[9px]">LIVE</Badge>}
+                                                    {!isLive && (
+                                                        <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                                                            <EditSessionDialog slotId={session.id} currentStartTime={session.startTime} />
+                                                        </div>
+                                                    )}
+                                                </div>
                                             </div>
                                         );
                                     })

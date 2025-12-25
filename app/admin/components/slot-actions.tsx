@@ -10,7 +10,9 @@ import { CheckCircle2, ArrowRight, FileText, Edit2 } from "lucide-react";
 import { toast } from "sonner";
 import { useState } from "react";
 
-export function SlotActions({ slotId, status }: { slotId: string; status: string }) {
+import { EditSessionDialog } from "@/app/admin/components/edit-session-dialog";
+
+export function SlotActions({ slotId, status, startTime }: { slotId: string; status: string; startTime: Date }) {
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
     const [notes, setNotes] = useState("");
@@ -79,6 +81,7 @@ export function SlotActions({ slotId, status }: { slotId: string; status: string
 
     return (
         <div className="flex items-center gap-2">
+            <EditSessionDialog slotId={slotId} currentStartTime={startTime} />
             <Button
                 size="sm"
                 variant="outline"

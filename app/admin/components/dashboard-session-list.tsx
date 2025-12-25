@@ -48,7 +48,7 @@ export function DashboardSessionList({ sessions }: { sessions: SlotWithStudent[]
                                 {format(start, "h:mm a")} - {format(end, "h:mm a")}
                             </p>
                         </div>
-                        <SlotActions slotId={slot.id} status={slot.status} />
+                        <SlotActions slotId={slot.id} status={slot.status} startTime={start} />
                     </div>
                 );
             })}
