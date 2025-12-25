@@ -228,6 +228,9 @@ export async function scheduleSession(studentId: string, date: Date, durationMin
     }
 
     revalidatePath("/admin/students");
+    revalidatePath("/admin"); // Update dashboard
+    revalidatePath("/student");
+    revalidatePath("/student/sessions");
 }
 
 export async function completeSession(slotId: string) {

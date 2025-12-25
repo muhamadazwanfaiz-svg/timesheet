@@ -26,9 +26,10 @@ export default async function AdminDashboard() {
         where: {
             endTime: { gte: now },
             studentId: { not: null },
+            status: { not: "CANCELED" }
         },
         orderBy: { startTime: "asc" },
-        take: 5,
+        take: 10,
         include: { student: true },
     });
 
