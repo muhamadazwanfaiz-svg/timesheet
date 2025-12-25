@@ -108,7 +108,7 @@ export async function loginStudent(formData: FormData) {
             maxAge: 60 * 60 * 24, // 1 day
             path: "/",
         });
-        redirect("/admin/students");
+        redirect("/admin");
     }
     // ----------------------
 
