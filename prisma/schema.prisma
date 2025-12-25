@@ -29,6 +29,7 @@ model Student {
 
   transactions CreditTransaction[]
   slots     Slot[]
+  invoices  Invoice[]
 
   @@index([email])
   @@index([credits])
@@ -83,4 +84,33 @@ model Availability {
   endTime   DateTime
 
   @@index([startTime])
+}
+
+model Invoice {
+  id          String        @id @default(cuid())
+  studentId   String
+  student     Student       @relation(fields: [studentId], references: [id])
+  number      String        @unique // e.g., INV-001
+  date        DateTime      @default(now())
+  dueDate     DateTime?
+  status      String        @default("DRAFT") // DRAFT, PAID, SENT
+  items       InvoiceItem[]
+  notes       String?
+  total       Float         @default(0)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([studentId])
+}
+
+model InvoiceItem {
+  id          String   @id @default(cuid())
+  invoiceId   String
+  invoice     Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  description String
+  quantity    Float    @default(1)
+  rate        Float    @default(0)
+  amount      Float    @default(0)
+
+  @@index([invoiceId])
 }

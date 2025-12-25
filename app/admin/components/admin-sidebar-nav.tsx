@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Users, Calendar, LayoutDashboard, Settings } from "lucide-react";
+import { Users, Calendar, LayoutDashboard, Settings, FileText } from "lucide-react";
 import { AdminLogoutButton } from "./admin-logout-button";
 
 const navItems = [
     { href: "/admin", label: "Overview", icon: LayoutDashboard },
     { href: "/admin/students", label: "Students", icon: Users },
     { href: "/admin/availability", label: "Availability", icon: Calendar },
+    { href: "/admin/invoices", label: "Invoices", icon: FileText },
     { href: "/admin/settings", label: "Settings", icon: Settings },
 ];
 
@@ -25,15 +26,15 @@ export function AdminSidebarNav() {
                             key={item.href}
                             href={item.href}
                             className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 group ${isActive
-                                    ? "bg-indigo-50 text-indigo-600 shadow-sm shadow-indigo-100 font-medium dark:bg-indigo-900/20 dark:text-indigo-400 dark:shadow-none"
-                                    : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-200"
+                                ? "bg-indigo-50 text-indigo-600 shadow-sm shadow-indigo-100 font-medium dark:bg-indigo-900/20 dark:text-indigo-400 dark:shadow-none"
+                                : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-200"
                                 }`}
                         >
                             <item.icon
                                 size={20}
                                 className={`transition-colors ${isActive
-                                        ? "text-indigo-600 dark:text-indigo-400"
-                                        : "text-slate-400 group-hover:text-slate-600 dark:text-slate-500 dark:group-hover:text-slate-300"
+                                    ? "text-indigo-600 dark:text-indigo-400"
+                                    : "text-slate-400 group-hover:text-slate-600 dark:text-slate-500 dark:group-hover:text-slate-300"
                                     }`}
                             />
                             {item.label}
