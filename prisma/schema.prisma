@@ -29,6 +29,9 @@ model Student {
 
   transactions CreditTransaction[]
   slots     Slot[]
+
+  @@index([email])
+  @@index([credits])
 }
 
 model CreditTransaction {
@@ -39,6 +42,8 @@ model CreditTransaction {
   type        String   // "ADJUSTMENT", "SESSION_BOOKING", "SESSION_REFUND"
   description String?
   createdAt   DateTime @default(now())
+
+  @@index([studentId])
 }
 
 model Slot {
@@ -57,6 +62,10 @@ model Slot {
   
   // New: Tutor Notes
   classNotes     String?
+
+  @@index([startTime])
+  @@index([status])
+  @@index([studentId])
 }
 
 model SystemSettings {
@@ -64,10 +73,14 @@ model SystemSettings {
   showCommunity Boolean @default(false)
   showCourses   Boolean @default(false)
   showSessions  Boolean @default(true)
+  showSeoNews   Boolean @default(true)
+  showRewards   Boolean @default(true)
 }
 
 model Availability {
   id        String   @id @default(cuid())
   startTime DateTime
   endTime   DateTime
+
+  @@index([startTime])
 }

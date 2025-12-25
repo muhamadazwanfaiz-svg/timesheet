@@ -11,7 +11,9 @@ export async function getSystemSettings() {
             data: {
                 showCommunity: false,
                 showCourses: false,
-                showSessions: true
+                showSessions: true,
+                showSeoNews: true,
+                showRewards: true
             }
         });
     }
@@ -19,7 +21,10 @@ export async function getSystemSettings() {
     return settings;
 }
 
-export async function toggleSystemSetting(key: "showCommunity" | "showCourses" | "showSessions", value: boolean) {
+export async function toggleSystemSetting(
+    key: "showCommunity" | "showCourses" | "showSessions" | "showSeoNews" | "showRewards",
+    value: boolean
+) {
     const settings = await getSystemSettings();
 
     await prisma.systemSettings.update({

@@ -44,6 +44,28 @@ export default async function AdminSettingsPage() {
 
                     </CardContent>
                 </Card>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Dashboard Widgets</CardTitle>
+                        <CardDescription>Configure widgets visible on the student home screen (Desktop only).</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                        <FeatureToggle
+                            label="SEO News Feed"
+                            description="Show automated SEO news from industry sources."
+                            initialValue={settings.showSeoNews}
+                            settingKey="showSeoNews"
+                        />
+
+                        <FeatureToggle
+                            label="Gamification Rewards"
+                            description="Show level progress and rewards card."
+                            initialValue={settings.showRewards}
+                            settingKey="showRewards"
+                        />
+                    </CardContent>
+                </Card>
             </div>
         </div>
     );

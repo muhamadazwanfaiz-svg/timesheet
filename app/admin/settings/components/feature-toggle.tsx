@@ -10,7 +10,7 @@ interface FeatureToggleProps {
     label: string;
     description: string;
     initialValue: boolean;
-    settingKey: "showCommunity" | "showCourses" | "showSessions";
+    settingKey: "showCommunity" | "showCourses" | "showSessions" | "showSeoNews" | "showRewards";
 }
 
 export function FeatureToggle({ label, description, initialValue, settingKey }: FeatureToggleProps) {
