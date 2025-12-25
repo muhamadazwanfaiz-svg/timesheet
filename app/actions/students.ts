@@ -206,6 +206,9 @@ export async function deleteSession(slotId: string) {
         throw e;
     }
     revalidatePath("/admin/students");
+    revalidatePath("/admin");
+    revalidatePath("/student");
+    revalidatePath("/student/sessions");
 }
 
 export async function scheduleSession(studentId: string, date: Date, durationMinutes: number = 60) {
